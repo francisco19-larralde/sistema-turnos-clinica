@@ -5,7 +5,7 @@ export class EstadoService {
 
     obtenerEstado() {
         return {
-            estado: 'ok',
+            estado: 'prueba correcta',
             fecha: new Date().toISOString(),
         };
     }

@@ -8,6 +8,7 @@ dist/
 build/
 frontend/dist/
 backend/dist/
+backend/tsconfig.build.tsbuildinfo
 
 # Variables de entorno
 .env
@@ -24,5 +25,17 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Prisma
+# Prisma - cliente generado (se regenera con `npx prisma generate`)
 backend/prisma/*.db
+backend/src/generated/
+
+# Skills de agentes de IA (Prisma, etc.) - no forman parte del proyecto
+.claude/
+.cursor/
+.agents/
+.windsurf/
+backend/.claude/
+backend/.cursor/
+backend/.agents/
+backend/.windsurf/
+backend/skills-lock.json
