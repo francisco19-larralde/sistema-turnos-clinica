@@ -40,14 +40,16 @@ model Especialidad {
 }
 
 model Profesional {
-  id             Int          @id @default(autoincrement())
-  matricula      String       @unique
-  telefono       String?
-  creadoEn       DateTime     @default(now())
-  especialidadId Int
-  especialidad   Especialidad @relation(fields: [especialidadId], references: [id])
-  usuarioId      Int          @unique
-  usuario        Usuario      @relation(fields: [usuarioId], references: [id])
+  id               Int              @id @default(autoincrement())
+  matricula        String           @unique
+  telefono         String?
+  creadoEn         DateTime         @default(now())
+  especialidadId   Int
+  especialidad     Especialidad     @relation(fields: [especialidadId], references: [id])
+  usuarioId        Int              @unique
+  usuario          Usuario          @relation(fields: [usuarioId], references: [id])
+  disponibilidades Disponibilidad[]
+  turnos           Turno[]
 }
 
 model Paciente {
@@ -58,4 +60,45 @@ model Paciente {
   creadoEn        DateTime @default(now())
   usuarioId       Int      @unique
   usuario         Usuario  @relation(fields: [usuarioId], references: [id])
+  turnos          Turno[]
+}
+
+enum DiaSemana {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+  DOMINGO
+}
+
+enum EstadoTurno {
+  PENDIENTE
+  CONFIRMADO
+  CANCELADO
+  COMPLETADO
+}
+
+model Disponibilidad {
+  id            Int         @id @default(autoincrement())
+  diaSemana     DiaSemana
+  horaInicio    String
+  horaFin       String
+  creadoEn      DateTime    @default(now())
+  profesionalId Int
+  profesional   Profesional @relation(fields: [profesionalId], references: [id])
+}
+
+model Turno {
+  id            Int         @id @default(autoincrement())
+  fecha         DateTime    @db.Date
+  horaInicio    String
+  horaFin       String
+  estado        EstadoTurno @default(PENDIENTE)
+  creadoEn      DateTime    @default(now())
+  pacienteId    Int
+  paciente      Paciente    @relation(fields: [pacienteId], references: [id])
+  profesionalId Int
+  profesional   Profesional @relation(fields: [profesionalId], references: [id])
 }
