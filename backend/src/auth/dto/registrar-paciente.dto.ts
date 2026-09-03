@@ -1,6 +1,7 @@
-import { IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsEmail, MinLength, IsDateString, IsOptional } from "class-validator";
 
-export class CrearPacienteDto {
+
+export class RegistrarPacienteDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
@@ -10,6 +11,13 @@ export class CrearPacienteDto {
     @IsNotEmpty()
     @MaxLength(100)
     apellido: string;
+
+    @IsEmail()
+    email: string;
+
+    @IsString()
+    @MinLength(8)
+    contrasena: string;
 
     @IsString()
     @IsNotEmpty()

@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { EspecialidadModule } from './especialidad/especialidad.module';
 import { ProfesionalModule } from './profesional/profesional.module';
 import { PacienteModule } from './paciente/paciente.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PacienteModule } from './paciente/paciente.module';
     EspecialidadModule,
     ProfesionalModule,
     PacienteModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

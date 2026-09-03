@@ -12,6 +12,25 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Rol {
+  ADMINISTRATIVO
+  PROFESIONAL
+  PACIENTE
+}
+
+model Usuario {
+  id             Int          @id @default(autoincrement())
+  email          String       @unique
+  contrasenaHash String
+  nombre         String
+  apellido       String
+  rol            Rol
+  activo         Boolean      @default(true)
+  creadoEn       DateTime     @default(now())
+  paciente       Paciente?
+  profesional    Profesional?
+}
+
 model Especialidad {
   id            Int           @id @default(autoincrement())
   nombre        String        @unique
@@ -22,21 +41,21 @@ model Especialidad {
 
 model Profesional {
   id             Int          @id @default(autoincrement())
-  nombre         String
-  apellido       String
-  matricula      String
+  matricula      String       @unique
   telefono       String?
+  creadoEn       DateTime     @default(now())
   especialidadId Int
   especialidad   Especialidad @relation(fields: [especialidadId], references: [id])
-  creadoEn       DateTime     @default(now())
+  usuarioId      Int          @unique
+  usuario        Usuario      @relation(fields: [usuarioId], references: [id])
 }
 
 model Paciente {
   id              Int      @id @default(autoincrement())
-  nombre          String
-  apellido        String
   dni             String   @unique
   fechaNacimiento DateTime
   telefono        String?
   creadoEn        DateTime @default(now())
+  usuarioId       Int      @unique
+  usuario         Usuario  @relation(fields: [usuarioId], references: [id])
 }

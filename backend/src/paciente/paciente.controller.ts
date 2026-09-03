@@ -1,20 +1,10 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from "@nestjs/common";
-import { PacienteService } from "./paciente.service";
-import { CrearPacienteDto } from "./dto/crear-paciente.dto";
-import { ActualizarPacienteDto } from "./dto/actualizar-paciente.dto";
+import { Controller, Get, Patch, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { PacienteService } from './paciente.service';
+import { ActualizarPacienteDto } from './dto/actualizar-paciente.dto';
 
-
-
-@Controller('paciente')
+@Controller('pacientes')
 export class PacienteController {
-
     constructor(private readonly pacienteService: PacienteService) { }
-
-
-    @Post()
-    crear(@Body() datos: CrearPacienteDto) {
-        return this.pacienteService.crear(datos);
-    }
 
     @Get()
     buscarTodos() {
@@ -27,7 +17,10 @@ export class PacienteController {
     }
 
     @Patch(':id')
-    actualizar(@Param('id', ParseIntPipe) id: number, @Body() datos: ActualizarPacienteDto) {
+    actualizar(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() datos: ActualizarPacienteDto,
+    ) {
         return this.pacienteService.actualizar(id, datos);
     }
 
@@ -35,6 +28,4 @@ export class PacienteController {
     eliminar(@Param('id', ParseIntPipe) id: number) {
         return this.pacienteService.eliminar(id);
     }
-
-
 }

@@ -1,38 +1,68 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import { CrearProfesionalDto } from "./dto/crear-profesional.dto";
-import { ActualizarProfesionalDto } from "./dto/actualizar-profesional.dto";
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CrearProfesionalDto } from './dto/crear-profesional.dto';
+import { ActualizarProfesionalDto } from './dto/actualizar-profesional.dto';
+import { hashearContrasena } from '../auth/hash.util';
+import { Rol } from '../generated/prisma/client';
 
+const SELECCION_USUARIO = {
+    select: { id: true, nombre: true, apellido: true, email: true, rol: true },
+} as const;
 
 @Injectable()
 export class ProfesionalService {
     constructor(private readonly prisma: PrismaService) { }
 
-
     async crear(datos: CrearProfesionalDto) {
         await this.validarEspecialidadExiste(datos.especialidadId);
 
-        return this.prisma.profesional.create({
-            data: datos,
-            include: { especialidad: true },
+        const emailExistente = await this.prisma.usuario.findUnique({
+            where: { email: datos.email },
+        });
+        if (emailExistente) {
+            throw new ConflictException('Ya existe un usuario registrado con ese email');
+        }
+
+        const contrasenaHash = await hashearContrasena(datos.contrasena);
+
+        return this.prisma.$transaction(async (tx) => {
+            const usuario = await tx.usuario.create({
+                data: {
+                    nombre: datos.nombre,
+                    apellido: datos.apellido,
+                    email: datos.email,
+                    contrasenaHash,
+                    rol: Rol.PROFESIONAL,
+                },
+            });
+
+            return tx.profesional.create({
+                data: {
+                    matricula: datos.matricula,
+                    telefono: datos.telefono,
+                    especialidadId: datos.especialidadId,
+                    usuarioId: usuario.id,
+                },
+                include: { especialidad: true, usuario: SELECCION_USUARIO },
+            });
         });
     }
 
     buscarTodos() {
         return this.prisma.profesional.findMany({
-            include: { especialidad: true },
-            orderBy: { apellido: 'asc' }
+            include: { especialidad: true, usuario: SELECCION_USUARIO },
+            orderBy: { creadoEn: 'desc' },
         });
     }
 
     async buscarPorId(id: number) {
         const profesional = await this.prisma.profesional.findUnique({
             where: { id },
-            include: { especialidad: true },
+            include: { especialidad: true, usuario: SELECCION_USUARIO },
         });
 
         if (!profesional) {
-            throw new NotFoundException(`No se encontró un profesional con el ID ${id}`);
+            throw new NotFoundException(`No existe un profesional con id ${id}`);
         }
 
         return profesional;
@@ -48,15 +78,13 @@ export class ProfesionalService {
         return this.prisma.profesional.update({
             where: { id },
             data: datos,
-            include: { especialidad: true },
+            include: { especialidad: true, usuario: SELECCION_USUARIO },
         });
     }
 
     async eliminar(id: number) {
         await this.buscarPorId(id);
-        return this.prisma.profesional.delete({
-            where: { id },
-        });
+        return this.prisma.profesional.delete({ where: { id } });
     }
 
     private async validarEspecialidadExiste(especialidadId: number) {
@@ -65,7 +93,9 @@ export class ProfesionalService {
         });
 
         if (!especialidad) {
-            throw new NotFoundException(`No se encontró una especialidad con el ID ${especialidadId}`);
+            throw new BadRequestException(
+                `No existe una especialidad con id ${especialidadId}`,
+            );
         }
     }
 }

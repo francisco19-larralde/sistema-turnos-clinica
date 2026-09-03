@@ -1,5 +1,12 @@
-import { IsString, IsNotEmpty, MaxLength, IsOptional, IsInt } from "class-validator";
-
+import {
+    IsEmail,
+    IsInt,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    MaxLength,
+    MinLength,
+} from 'class-validator';
 
 export class CrearProfesionalDto {
     @IsString()
@@ -11,6 +18,13 @@ export class CrearProfesionalDto {
     @IsNotEmpty()
     @MaxLength(100)
     apellido: string;
+
+    @IsEmail()
+    email: string;
+
+    @IsString()
+    @MinLength(8)
+    contrasena: string;
 
     @IsString()
     @IsNotEmpty()

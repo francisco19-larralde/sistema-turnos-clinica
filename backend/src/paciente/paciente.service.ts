@@ -1,32 +1,32 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { CrearPacienteDto } from "./dto/crear-paciente.dto";
 import { ActualizarPacienteDto } from "./dto/actualizar-paciente.dto";
+
+const SELECCION_USUARIO = {
+    select: { id: true, nombre: true, apellido: true, email: true },
+} as const;
 
 
 @Injectable()
 export class PacienteService {
     constructor(private readonly prisma: PrismaService) { }
 
-    crear(datos: CrearPacienteDto) {
-        return this.prisma.paciente.create({
-            data: datos
-        })
-    }
 
     buscarTodos() {
         return this.prisma.paciente.findMany({
-            orderBy: { apellido: 'asc' }
+            include: { usuario: SELECCION_USUARIO },
+            orderBy: { creadoEn: 'desc' },
         })
     }
 
     async buscarPorId(id: number) {
         const paciente = await this.prisma.paciente.findUnique({
-            where: { id }
-        })
+            where: { id },
+            include: { usuario: SELECCION_USUARIO },
+        });
 
         if (!paciente) {
-            throw new NotFoundException(`Paciente con id ${id} no encontrado`)
+            throw new NotFoundException(`No existe un paciente con id ${id}`);
         }
 
         return paciente;
@@ -34,19 +34,16 @@ export class PacienteService {
 
     async actualizar(id: number, datos: ActualizarPacienteDto) {
         await this.buscarPorId(id);
-
         return this.prisma.paciente.update({
             where: { id },
-            data: datos
+            data: datos,
+            include: { usuario: SELECCION_USUARIO },
         });
     }
 
     async eliminar(id: number) {
         await this.buscarPorId(id);
-
-        return this.prisma.paciente.delete({
-            where: { id }
-        });
+        return this.prisma.paciente.delete({ where: { id } });
     }
 
 }
