@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AutenticacionGuard } from "./autenticacion.guard";
+import { AutenticacionGuard } from "./guards/autenticacion.guard";
 import { LoginDto } from "./dto/login.dto";
 import { RegistrarPacienteDto } from "./dto/registrar-paciente.dto";
 

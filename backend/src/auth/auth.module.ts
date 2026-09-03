@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { AutenticacionGuard } from './autenticacion.guard';
 import type { StringValue } from 'ms';
+import { AuthService } from './auth.service';
+import { AutenticacionGuard } from './guards/autenticacion.guard';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
     imports: [
@@ -19,7 +20,7 @@ import type { StringValue } from 'ms';
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, AutenticacionGuard],
-    exports: [AutenticacionGuard, JwtModule],
+    providers: [AuthService, AutenticacionGuard, RolesGuard],
+    exports: [AutenticacionGuard, RolesGuard, JwtModule],
 })
 export class AuthModule { }
