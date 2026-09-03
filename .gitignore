@@ -13,6 +13,7 @@ backend/tsconfig.build.tsbuildinfo
 # Variables de entorno
 .env
 .env.local
+.env.test
 *.env
 
 # Logs
