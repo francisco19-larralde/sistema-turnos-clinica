@@ -1,0 +1,72 @@
+<div class="min-h-screen flex items-center justify-center bg-base-200 p-4">
+  <div class="card bg-base-100 shadow-md w-full max-w-sm p-6">
+    <h1 class="text-xl font-bold mb-6 text-center">Registrarse</h1>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()" class="flex flex-col gap-4">
+
+      <div class="flex flex-col gap-1">
+        <label for="nombre" class="text-sm font-medium">Nombre</label>
+        <input pInputText id="nombre" type="text" formControlName="nombre" class="w-full" />
+        @if (formulario.get('nombre')?.invalid && formulario.get('nombre')?.touched) {
+        <span class="text-error text-sm">El nombre es obligatorio</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="apellido" class="text-sm font-medium">Apellido</label>
+        <input pInputText id="apellido" type="text" formControlName="apellido" class="w-full" />
+        @if (formulario.get('apellido')?.invalid && formulario.get('apellido')?.touched) {
+        <span class="text-error text-sm">El apellido es obligatorio</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="email" class="text-sm font-medium">Email</label>
+        <input pInputText id="email" type="email" formControlName="email" class="w-full" />
+        @if (formulario.get('email')?.invalid && formulario.get('email')?.touched) {
+        <span class="text-error text-sm">Ingresá un email válido</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="contrasena" class="text-sm font-medium">Contraseña</label>
+        <input pInputText id="contrasena" type="password" formControlName="contrasena" class="w-full" />
+        @if (formulario.get('contrasena')?.invalid && formulario.get('contrasena')?.touched) {
+        <span class="text-error text-sm">Mínimo 8 caracteres</span>
+        }
+      </div>
+
+      @if (mensajeError()) {
+      <div class="text-error text-sm text-center">{{ mensajeError() }}</div>
+      }
+
+      <div class="flex flex-col gap-1">
+        <label for="dni" class="text-sm font-medium">DNI</label>
+        <input pInputText id="dni" type="text" formControlName="dni" class="w-full" />
+        @if (formulario.get('dni')?.invalid && formulario.get('dni')?.touched) {
+        <span class="text-error text-sm">El DNI es obligatorio</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="fechaNacimiento" class="text-sm font-medium">Fecha de Nacimiento</label>
+        <input pInputText id="fechaNacimiento" type="date" formControlName="fechaNacimiento" class="w-full" />
+        @if (formulario.get('fechaNacimiento')?.invalid && formulario.get('fechaNacimiento')?.touched) {
+        <span class="text-error text-sm">La fecha de nacimiento es obligatoria</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="telefono" class="text-sm font-medium">Teléfono</label>
+        <input pInputText id="telefono" type="text" formControlName="telefono" class="w-full" />
+      </div>
+
+      <p-button type="submit" label="Registrar" styleClass="w-full mt-2" [loading]="cargando()" />
+
+      <p class="text-sm text-center mt-4">
+        ¿Ya tenés cuenta?
+        <a routerLink="/login" class="text-primary font-medium">Iniciar Sesion</a>
+      </p>
+    </form>
+  </div>
+</div>

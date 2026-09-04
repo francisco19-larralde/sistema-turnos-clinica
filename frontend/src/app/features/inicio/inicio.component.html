@@ -1,0 +1,11 @@
+<div class="p-6">
+  <div class="card bg-base-100 shadow-md max-w-md p-6">
+    <h2 class="text-lg font-semibold mb-2">
+      Bienvenido/a, {{ authService.usuarioActual()?.nombre }}
+    </h2>
+    <p class="text-sm text-base-content/70 mb-4">
+      Rol: {{ authService.usuarioActual()?.rol }}
+    </p>
+    <p-button label="Cerrar sesión" severity="secondary" (onClick)="cerrarSesion()" />
+  </div>
+</div>
