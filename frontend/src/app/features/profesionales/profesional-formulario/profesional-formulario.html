@@ -1,0 +1,56 @@
+<div class="p-6">
+  <div class="card bg-base-100 shadow-md max-w-lg p-6">
+    <h1 class="text-xl font-bold mb-6">
+      {{ esEdicion() ? 'Editar profesional' : 'Nuevo profesional' }}
+    </h1>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()" class="flex flex-col gap-4">
+      @if (!esEdicion()) {
+      <div class="flex flex-col gap-1">
+        <label for="nombre" class="text-sm font-medium">Nombre</label>
+        <input pInputText id="nombre" formControlName="nombre" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="apellido" class="text-sm font-medium">Apellido</label>
+        <input pInputText id="apellido" formControlName="apellido" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="email" class="text-sm font-medium">Email</label>
+        <input pInputText id="email" type="email" formControlName="email" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="contrasena" class="text-sm font-medium">Contraseña inicial</label>
+        <input pPassword id="contrasena" formControlName="contrasena" class="w-full" [feedback]="false" />
+      </div>
+      }
+
+      <div class="flex flex-col gap-1">
+        <label for="matricula" class="text-sm font-medium">Matrícula</label>
+        <input pInputText id="matricula" formControlName="matricula" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="telefono" class="text-sm font-medium">Teléfono (opcional)</label>
+        <input pInputText id="telefono" formControlName="telefono" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="especialidad" class="text-sm font-medium">Especialidad</label>
+        <p-select id="especialidad" formControlName="especialidadId" [options]="especialidades()" optionLabel="nombre"
+          optionValue="id" placeholder="Seleccioná una especialidad" class="w-full" />
+      </div>
+
+      @if (error()) {
+      <div class="text-error text-sm">{{ error() }}</div>
+      }
+
+      <div class="flex gap-2 mt-2">
+        <p-button type="submit" label="Guardar" [loading]="cargando()" />
+        <p-button type="button" label="Cancelar" severity="secondary" [outlined]="true" routerLink="/profesionales" />
+      </div>
+    </form>
+  </div>
+</div>

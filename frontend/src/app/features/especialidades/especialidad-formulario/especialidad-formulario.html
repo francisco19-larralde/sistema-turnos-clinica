@@ -1,0 +1,31 @@
+<div class="p-6">
+  <div class="card bg-base-100 shadow-md max-w-lg p-6">
+    <h1 class="text-xl font-bold mb-6">
+      {{ esEdicion() ? 'Editar especialidad' : 'Nueva especialidad' }}
+    </h1>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <label for="nombre" class="text-sm font-medium">Nombre</label>
+        <input pInputText id="nombre" formControlName="nombre" class="w-full" />
+        @if (formulario.get('nombre')?.invalid && formulario.get('nombre')?.touched) {
+        <span class="text-error text-sm">El nombre es obligatorio</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="descripcion" class="text-sm font-medium">Descripción (opcional)</label>
+        <textarea pTextarea id="descripcion" formControlName="descripcion" rows="3" class="w-full"></textarea>
+      </div>
+
+      @if (error()) {
+      <div class="text-error text-sm">{{ error() }}</div>
+      }
+
+      <div class="flex gap-2 mt-2">
+        <p-button type="submit" label="Guardar" [loading]="cargando()" />
+        <p-button type="button" label="Cancelar" severity="secondary" [outlined]="true" routerLink="/especialidades" />
+      </div>
+    </form>
+  </div>
+</div>
