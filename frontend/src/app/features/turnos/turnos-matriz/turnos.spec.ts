@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Turnos } from './turnos';
+import { MatrizTurnos as Turnos } from './turnos';
 
 describe('Turnos', () => {
   let component: Turnos;

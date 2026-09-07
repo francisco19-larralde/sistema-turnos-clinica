@@ -29,6 +29,7 @@ model Usuario {
   creadoEn       DateTime     @default(now())
   paciente       Paciente?
   profesional    Profesional?
+  reprogramaciones ReprogramacionTurno[]
 }
 
 model Especialidad {
@@ -49,6 +50,7 @@ model Profesional {
   usuarioId        Int              @unique
   usuario          Usuario          @relation(fields: [usuarioId], references: [id])
   disponibilidades Disponibilidad[]
+  bloqueos         BloqueoDisponibilidad[]
   turnos           Turno[]
 }
 
@@ -96,9 +98,41 @@ model Turno {
   horaInicio    String
   horaFin       String
   estado        EstadoTurno @default(PENDIENTE)
+  version       Int         @default(0)
+  reprogramaciones ReprogramacionTurno[]
   creadoEn      DateTime    @default(now())
   pacienteId    Int
   paciente      Paciente    @relation(fields: [pacienteId], references: [id])
   profesionalId Int
   profesional   Profesional @relation(fields: [profesionalId], references: [id])
+}
+
+model BloqueoDisponibilidad {
+  id            Int         @id @default(autoincrement())
+  fecha         DateTime    @db.Date
+  motivo        String
+  profesionalId Int
+  profesional   Profesional @relation(fields: [profesionalId], references: [id])
+  creadoEn      DateTime    @default(now())
+
+  @@unique([profesionalId, fecha])
+}
+
+model ReprogramacionTurno {
+  id              Int         @id @default(autoincrement())
+  turnoId         Int
+  turno           Turno       @relation(fields: [turnoId], references: [id])
+  usuarioId       Int
+  usuario         Usuario     @relation(fields: [usuarioId], references: [id])
+  fechaAnterior   DateTime    @db.Date
+  horaAnterior    String
+  horaFinAnterior String
+  estadoAnterior  EstadoTurno
+  fechaNueva      DateTime    @db.Date
+  horaNueva       String
+  horaFinNueva    String
+  motivo          String
+  creadoEn        DateTime    @default(now())
+
+  @@index([turnoId, creadoEn, id])
 }

@@ -14,11 +14,11 @@
 
     @if (profesionalSeleccionadoId()) {
     <app-matriz-turnos [profesionalId]="profesionalSeleccionadoId()!"
-      (horarioSeleccionado)="onHorarioSeleccionado($event)" />
+      (periodoCambiado)="seleccion.set(null)" (horarioSeleccionado)="onHorarioSeleccionado($event)" />
     }
 
     @if (seleccion()) {
-    <div class="mt-6 flex items-center justify-between bg-base-200 rounded-box p-4">
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-base-200 rounded-box p-4">
       <span>
         Turno seleccionado: <strong>{{ seleccion()!.fecha }} a las {{ seleccion()!.hora }}</strong>
       </span>

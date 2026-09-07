@@ -14,8 +14,14 @@ import { TurnosLista } from './features/turnos/turnos-lista/turnos-lista';
 import { TurnoFormularioComponent } from './features/turnos/turnos-formulario/turnos-formulario';
 import { DisponibilidadProfesional } from './features/disponibilidad-profesional/disponibilidad-profesional';
 import { administrativoGuard } from './core/guards/administrativo.guard';
+import { AgendaDiaria } from './features/turnos/agenda-diaria/agenda-diaria';
 
 export const routes: Routes = [
+  {
+    path: 'agenda',
+    canActivate: [authGuard, administrativoGuard],
+    component: AgendaDiaria,
+  },
   {
     path: 'login',
     component: LoginComponent,
@@ -91,6 +97,10 @@ export const routes: Routes = [
       {
         path: 'nuevo',
         component: TurnoFormularioComponent,
+      },
+      {
+        path: ':id/gestionar',
+        loadComponent: () => import('./features/turnos/reprogramar-turno/reprogramar-turno').then(m => m.ReprogramarTurno),
       },
     ],
   },

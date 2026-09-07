@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { ButtonModule } from 'primeng/button';
 import { DisponibilidadService } from '../../../core/services/disponibilidad.service';
 import { TurnoService } from '../../../core/services/turno.service';
 import { DiaSemana, Disponibilidad } from '../../../core/models/disponibilidad.model';
@@ -24,7 +25,7 @@ interface Columna {
 }
 
 @Component({
-  imports: [],
+  imports: [ButtonModule],
   selector: 'app-matriz-turnos',
   styleUrl: './turnos.css',
   templateUrl: './turnos.html',
@@ -33,6 +34,27 @@ export class MatrizTurnos implements OnChanges {
 
   @Input({ required: true }) profesionalId!: number;
   @Output() horarioSeleccionado = new EventEmitter<{ fecha: string; hora: string }>();
+  @Output() periodoCambiado = new EventEmitter<void>();
+  readonly semana = signal(0);
+  private cargaId = 0;
+
+  cambiarSemana(desplazamiento: number): void {
+    this.semana.set(Math.max(0, this.semana() + desplazamiento));
+    this.periodoCambiado.emit();
+    this.cargarMatriz();
+  }
+
+  volverAHoy(): void {
+    this.semana.set(0);
+    this.periodoCambiado.emit();
+    this.cargarMatriz();
+  }
+
+  rangoVisible(): string {
+    const fechas = this.generarProximosDias(7);
+    return fechas.map((fecha) => fecha.split('-').reverse().join('/'))
+      .filter((_, indice) => indice === 0 || indice === 6).join(' — ');
+  }
 
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);
@@ -61,6 +83,7 @@ export class MatrizTurnos implements OnChanges {
   }
 
   private cargarMatriz(): void {
+    const cargaId = ++this.cargaId;
     this.cargando.set(true);
     this.error.set(null);
 
@@ -68,6 +91,7 @@ export class MatrizTurnos implements OnChanges {
 
     this.disponibilidadService.listarPorProfesional(this.profesionalId).subscribe({
       next: (disponibilidades) => {
+        if (cargaId !== this.cargaId) return;
         const fechasConDisponibilidad = fechas.filter((fecha) =>
           disponibilidades.some((d) => d.diaSemana === this.obtenerDiaSemana(fecha)),
         );
@@ -85,16 +109,19 @@ export class MatrizTurnos implements OnChanges {
           ),
         ).subscribe({
           next: (listasDisponibles) => {
+            if (cargaId !== this.cargaId) return;
             this.construirGrilla(fechasConDisponibilidad, disponibilidades, listasDisponibles);
             this.cargando.set(false);
           },
           error: () => {
+            if (cargaId !== this.cargaId) return;
             this.error.set('No se pudieron cargar los horarios disponibles');
             this.cargando.set(false);
           },
         });
       },
       error: () => {
+        if (cargaId !== this.cargaId) return;
         this.error.set('No se pudo cargar la disponibilidad del profesional');
         this.cargando.set(false);
       },
@@ -155,7 +182,7 @@ export class MatrizTurnos implements OnChanges {
     const hoy = new Date();
     for (let i = 0; i < cantidad; i++) {
       const fecha = new Date(hoy);
-      fecha.setDate(hoy.getDate() + i);
+      fecha.setDate(hoy.getDate() + this.semana() * 7 + i);
       fechas.push(this.formatearFecha(fecha));
     }
     return fechas;

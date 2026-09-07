@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
-import { EspecialidadService } from "./especialidad.service";
+import { EspecialidadService } from './especialidad.service';
+import { Query } from '@nestjs/common';
+import { PaginacionDto } from '../comun/paginacion.dto';
 import { CrearEspecialidadDto } from "./dto/crear-especialidad.dto";
 import { ActualizarEspecialidadDto } from "./dto/actualizar-especialidad.dto";
 
@@ -16,6 +18,11 @@ export class EspecialidadController {
     @Get()
     buscarTodas() {
         return this.especialidadService.buscarTodas();
+    }
+
+    @Get('pagina')
+    buscarPagina(@Query() consulta: PaginacionDto) {
+        return this.especialidadService.buscarPagina(consulta);
     }
 
     @Get(':id')

@@ -1,0 +1,77 @@
+<section class="p-4 sm:p-6 max-w-7xl mx-auto">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold">Agenda diaria</h1>
+      <p class="text-sm text-base-content/70 mt-1">Consultá los turnos y organizá la atención del día.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <p-button label="Actualizar" icon="pi pi-refresh" severity="secondary" [outlined]="true" [loading]="cargando()" (onClick)="cargar()" />
+      <p-button label="Gestionar turnos" icon="pi pi-calendar" routerLink="/turnos" />
+    </div>
+  </div>
+
+  <div class="bg-base-100 rounded-xl border border-base-300 p-4 sm:p-5 mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end mb-5">
+      <div class="flex flex-col gap-2 min-w-0">
+        <label for="fecha-agenda" class="text-sm font-medium">Fecha de atención</label>
+        <p-datepicker inputId="fecha-agenda" [ngModel]="fecha()" (ngModelChange)="seleccionarFecha($event)" dateFormat="dd/mm/yy" [showIcon]="true" [readonlyInput]="true" appendTo="body" styleClass="w-full" />
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <p-button label="Anterior" icon="pi pi-chevron-left" severity="secondary" [outlined]="true" (onClick)="moverDia(-1)" />
+        <p-button label="Hoy" severity="secondary" [outlined]="true" (onClick)="hoy()" />
+        <p-button label="Siguiente" icon="pi pi-chevron-right" iconPos="right" severity="secondary" [outlined]="true" (onClick)="moverDia(1)" />
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="flex flex-col gap-2 min-w-0">
+        <label for="profesional-agenda" class="text-sm font-medium">Profesional</label>
+        <p-select inputId="profesional-agenda" [options]="profesionales()" optionLabel="nombre" optionValue="id" [ngModel]="profesionalId()" (ngModelChange)="profesionalId.set($event)" [showClear]="true" placeholder="Todos los profesionales" [filter]="true" appendTo="body" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-2 min-w-0">
+        <label for="estado-agenda" class="text-sm font-medium">Estado</label>
+        <p-select inputId="estado-agenda" [options]="estados" [ngModel]="estado()" (ngModelChange)="estado.set($event)" [showClear]="true" placeholder="Todos los estados" appendTo="body" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-2 min-w-0">
+        <label for="paciente-agenda" class="text-sm font-medium">Paciente</label>
+        <input pInputText id="paciente-agenda" placeholder="Buscar por nombre o apellido" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" class="w-full" />
+      </div>
+    </div>
+    <div class="mt-3">
+      <p-button label="Limpiar filtros" severity="secondary" [text]="true" (onClick)="limpiarFiltros()" />
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <p class="py-10 text-center" role="status">Cargando agenda...</p>
+  } @else if (error()) {
+    <div class="rounded-xl bg-base-100 border border-base-300 p-6" role="alert">
+      <p class="text-error mb-3">{{ error() }}</p>
+      <p-button label="Reintentar" (onClick)="cargar()" />
+    </div>
+  } @else {
+    <p class="text-sm mb-4" aria-live="polite">{{ filtrados().length }} de {{ turnosDelDia().length }} turnos del día</p>
+    @if (filtrados().length === 0) {
+      <div class="text-center rounded-xl border border-dashed border-base-300 py-12 px-4">
+        <i class="pi pi-calendar text-3xl text-base-content/50" aria-hidden="true"></i>
+        <p class="mt-3">{{ turnosDelDia().length === 0 ? 'No hay turnos para esta fecha.' : 'No hay turnos que coincidan con los filtros.' }}</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        @for (turno of filtrados(); track turno.id) {
+          <article class="min-w-0 rounded-xl border border-base-300 bg-base-100 p-4 sm:p-5">
+            <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+              <h2 class="font-bold text-lg">{{ turno.horaInicio }} — {{ turno.horaFin }}</h2>
+              <p-tag [value]="turno.estado" [severity]="severidad(turno.estado)" />
+            </div>
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div class="min-w-0"><dt class="text-base-content/60">Paciente</dt><dd class="font-medium break-words">{{ turno.paciente.usuario.nombre }} {{ turno.paciente.usuario.apellido }}</dd></div>
+              <div class="min-w-0"><dt class="text-base-content/60">Profesional</dt><dd class="font-medium break-words">{{ turno.profesional.usuario.nombre }} {{ turno.profesional.usuario.apellido }}</dd></div>
+              <div><dt class="text-base-content/60">Especialidad</dt><dd class="break-words">{{ turno.profesional.especialidad.nombre }}</dd></div>
+              <div><dt class="text-base-content/60">Turno</dt><dd>#{{ turno.id }}</dd></div>
+            </dl>
+          </article>
+        }
+      </div>
+    }
+  }
+</section>

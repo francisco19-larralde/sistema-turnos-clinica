@@ -24,6 +24,9 @@
       <i class="pi pi-calendar" aria-hidden="true"></i> Turnos
     </a>
     @if (authService.usuarioActual()?.rol === 'ADMINISTRATIVO') {
+    <a routerLink="/agenda" routerLinkActive="active" ariaCurrentWhenActive="page">
+      <i class="pi pi-calendar-clock" aria-hidden="true"></i> Agenda diaria
+    </a>
     <a routerLink="/profesionales" routerLinkActive="active" ariaCurrentWhenActive="page">
       <i class="pi pi-users" aria-hidden="true"></i> Profesionales
     </a>

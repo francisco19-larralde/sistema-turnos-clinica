@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
-import { ProfesionalService } from "./profesional.service";
+import { ProfesionalService } from './profesional.service';
+import { Query } from '@nestjs/common';
+import { PaginacionDto } from '../comun/paginacion.dto';
 import { CrearProfesionalDto } from "./dto/crear-profesional.dto";
 import { ActualizarProfesionalDto } from "./dto/actualizar-profesional.dto";
 import { Roles } from "../auth/decorators/roles.decorator";
@@ -23,6 +25,11 @@ export class ProfesionalController {
     @Get()
     buscarTodos() {
         return this.profesionalService.buscarTodos();
+    }
+
+    @Get('pagina')
+    buscarPagina(@Query() consulta: PaginacionDto) {
+        return this.profesionalService.buscarPagina(consulta);
     }
 
     @Get(':id')

@@ -2,12 +2,16 @@ import { Test } from '@nestjs/testing';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { TurnoService } from './turno.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { DiaSemana, EstadoTurno, Rol } from '../generated/prisma/client';
+import { DiaSemana, EstadoTurno, Rol } from '../generated/prisma/enums';
+jest.mock('../prisma/prisma.service', () => ({ PrismaService: class PrismaService {} }));
 
 describe('TurnoService', () => {
     let service: TurnoService;
 
     const prismaMock = {
+        $transaction: jest.fn(),
+        $queryRaw: jest.fn(),
+        bloqueoDisponibilidad: { findUnique: jest.fn() },
         turno: { create: jest.fn(), findMany: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
         disponibilidad: { findMany: jest.fn() },
         paciente: { findUnique: jest.fn() },
@@ -18,6 +22,9 @@ describe('TurnoService', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
+        prismaMock.$transaction.mockImplementation(callback => callback(prismaMock));
+        prismaMock.$queryRaw.mockResolvedValue([{ id: 1 }]);
+        prismaMock.bloqueoDisponibilidad.findUnique.mockResolvedValue(null);
 
         const moduleRef = await Test.createTestingModule({
             providers: [TurnoService, { provide: PrismaService, useValue: prismaMock }],
@@ -56,6 +63,19 @@ describe('TurnoService', () => {
                 BadRequestException,
             );
             expect(prismaMock.turno.create).not.toHaveBeenCalled();
+        });
+
+        it('rechaza reservas en una fecha bloqueada', async () => {
+            prismaMock.bloqueoDisponibilidad.findUnique.mockResolvedValue({ id: 1 });
+            await expect(service.crear({
+                profesionalId: 1, fecha: FECHA_MARTES_FUTURO, horaInicio: '10:00',
+            }, usuarioPaciente)).rejects.toThrow('El profesional no atiende');
+            expect(prismaMock.turno.create).not.toHaveBeenCalled();
+        });
+
+        it('no ofrece horarios en una fecha bloqueada', async () => {
+            prismaMock.bloqueoDisponibilidad.findUnique.mockResolvedValue({ id: 1 });
+            expect(await service.obtenerHorariosDisponibles(1, FECHA_MARTES_FUTURO)).toEqual([]);
         });
 
         it('debería rechazar un turno que se superpone con uno existente', async () => {

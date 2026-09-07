@@ -1,5 +1,7 @@
 import { Controller, Get, Patch, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { PacienteService } from './paciente.service';
+import { Query } from '@nestjs/common';
+import { PaginacionDto } from '../comun/paginacion.dto';
 import { ActualizarPacienteDto } from './dto/actualizar-paciente.dto';
 
 @Controller('pacientes')
@@ -9,6 +11,11 @@ export class PacienteController {
     @Get()
     buscarTodos() {
         return this.pacienteService.buscarTodos();
+    }
+
+    @Get('pagina')
+    buscarPagina(@Query() consulta: PaginacionDto) {
+        return this.pacienteService.buscarPagina(consulta);
     }
 
     @Get(':id')

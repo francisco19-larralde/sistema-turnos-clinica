@@ -17,6 +17,7 @@ import { Disponibilidad, DiaSemana } from '../../core/models/disponibilidad.mode
 import { Profesional } from '../../core/models/profesional.model';
 import { DisponibilidadService } from '../../core/services/disponibilidad.service';
 import { ProfesionalService } from '../../core/services/profesional.service';
+import { BloqueosProfesional } from './bloqueos-profesional/bloqueos-profesional';
 
 
 
@@ -40,6 +41,7 @@ const validarRangoHorario: ValidatorFn = (
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    BloqueosProfesional,
     RouterLink,
     ButtonModule,
     InputTextModule,

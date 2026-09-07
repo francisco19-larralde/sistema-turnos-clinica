@@ -1,0 +1,33 @@
+<section id="historial" class="mt-6 rounded-xl border border-base-300 bg-base-100 p-4 sm:p-6">
+  <h2 class="text-lg font-semibold mb-4">Historial de reprogramaciones</h2>
+  @if (cargando()) { <p role="status">Cargando historial...</p> }
+  @else if (error()) {
+    <p role="alert" class="text-error mb-3">{{ error() }}</p>
+    <p-button label="Reintentar" severity="secondary" (onClick)="cargar()" />
+  } @else {
+    <ol class="flex flex-col gap-4">
+      @for (cambio of registros(); track cambio.id) {
+        <li class="rounded-lg border border-base-300 p-4 min-w-0">
+          <p class="text-sm text-base-content/70 mb-3">
+            {{ cambio.creadoEn | date:'dd/MM/yyyy HH:mm' }} ·
+            {{ cambio.usuario.nombre }} {{ cambio.usuario.apellido }} ({{ cambio.usuario.rol }})
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div><span class="text-base-content/60">Antes</span>
+              <p class="font-medium">{{ cambio.fechaAnterior | date:'dd/MM/yyyy':'UTC' }} · {{ cambio.horaAnterior }}–{{ cambio.horaFinAnterior }}</p>
+              <p>{{ cambio.estadoAnterior }}</p>
+            </div>
+            <div><span class="text-base-content/60">Después</span>
+              <p class="font-medium">{{ cambio.fechaNueva | date:'dd/MM/yyyy':'UTC' }} · {{ cambio.horaNueva }}–{{ cambio.horaFinNueva }}</p>
+              <p>PENDIENTE</p>
+            </div>
+          </div>
+          <p class="mt-3 text-sm break-words"><strong>Motivo:</strong> {{ cambio.motivo }}</p>
+        </li>
+      } @empty { <li class="text-sm text-base-content/70">Este turno no tiene reprogramaciones registradas.</li> }
+    </ol>
+  }
+  @if (total() > 10 && !error()) {
+    <p-paginator [first]="primero()" [rows]="10" [totalRecords]="total()" [pageLinkSize]="3" (onPageChange)="cargar($event)" />
+  }
+</section>

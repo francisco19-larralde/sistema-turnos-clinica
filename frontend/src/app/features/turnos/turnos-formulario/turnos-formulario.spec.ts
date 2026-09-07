@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TurnosFormulario } from './turnos-formulario';
+import { TurnoFormularioComponent as TurnosFormulario } from './turnos-formulario';
 
 describe('TurnosFormulario', () => {
   let component: TurnosFormulario;

@@ -1,4 +1,4 @@
-import { DiaSemana } from '../generated/prisma/client';
+import { DiaSemana } from '../generated/prisma/enums';
 
 export const DURACION_TURNO_MINUTOS = 30;
 

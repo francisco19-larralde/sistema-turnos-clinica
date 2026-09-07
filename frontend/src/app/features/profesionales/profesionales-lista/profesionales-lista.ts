@@ -1,3 +1,4 @@
+import { TablaRemota } from '../../../core/services/tabla-remota';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProfesionalService } from '../../../core/services/profesional.service';
@@ -10,8 +11,10 @@ import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../core/services/auth.service';
 
 
+import { FiltrosTabla } from '../../components/filtros-tabla/filtros-tabla';
+
 @Component({
-  imports: [RouterLink, TableModule, ButtonModule, ConfirmDialogModule, ToastModule],
+  imports: [RouterLink, TableModule, ButtonModule, ConfirmDialogModule, ToastModule, FiltrosTabla],
   providers: [ConfirmationService, MessageService],
   selector: 'app-profesionales-lista',
   styleUrl: './profesionales-lista.css',
@@ -23,30 +26,14 @@ export class ProfesionalesLista implements OnInit {
   private readonly messageService = inject(MessageService);
   readonly authService = inject(AuthService);
 
-  readonly profesionales = signal<Profesional[]>([]);
-  readonly cargando = signal(true);
-  readonly error = signal<string | null>(null);
+  readonly pagina = new TablaRemota<Profesional>('profesionales');
+  readonly profesionales = this.pagina.datos;
+  readonly cargando = this.pagina.cargando;
+  readonly error = this.pagina.error;
 
-  ngOnInit() {
-    this.cargarProfesionales();
-  }
+  ngOnInit() {  }
 
-  cargarProfesionales() {
-    this.cargando.set(true);
-    this.error.set(null);
-
-    this.profesionalService.listar().subscribe({
-      next: (datos) => {
-        console.log('DATOS:', datos);
-        this.profesionales.set(datos);
-        this.cargando.set(false);
-      },
-      error: (err) => {
-        this.error.set('Error al cargar los profesionales');
-        this.cargando.set(false);
-      },
-    });
-  }
+  cargarProfesionales() { this.pagina.cargar(); }
 
   confirmarEliminacion(profesional: Profesional): void {
     this.confirmationService.confirm({
@@ -60,7 +47,7 @@ export class ProfesionalesLista implements OnInit {
   eliminar(id: number): void {
     this.profesionalService.eliminar(id).subscribe({
       next: () => {
-        this.profesionales.update((lista) => lista.filter((p) => p.id !== id));
+        this.pagina.cargar();
         this.messageService.add({ severity: 'success', summary: 'Profesional eliminado' });
       },
       error: (err) => {

@@ -9,16 +9,21 @@
     </a>
   </div>
 
-  @if (cargando()) {
-  <div class="text-center py-10 text-base-content/60">Cargando especialidades...</div>
-  } @else if (error()) {
-  <div class="text-center py-10 text-error">{{ error() }}</div>
-  } @else if (especialidades().length === 0) {
-  <div class="text-center py-10 text-base-content/60">
-    Todavía no hay especialidades cargadas.
-  </div>
-  } @else {
-  <p-table [value]="especialidades()" styleClass="rounded-box overflow-hidden">
+  @if (error()) {
+    <div class="mb-4 text-error" role="alert">{{ error() }} <p-button label="Reintentar" severity="secondary" (onClick)="pagina.cargar()" /></div>
+  }
+
+  <p-table #tabla [value]="especialidades()" styleClass="rounded-box overflow-hidden" [paginator]="true" [rows]="pagina.filas()" [first]="pagina.primero()"
+    [lazy]="true" (onLazyLoad)="pagina.cargar($event)" [totalRecords]="pagina.total()" [loading]="cargando()"
+    [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true"
+    currentPageReportTemplate="{first}–{last} de {totalRecords}" [pageLinks]="3"
+    [globalFilterFields]="['nombre', 'descripcion']">
+    <ng-template #caption>
+      <app-filtros-tabla [tabla]="tabla" placeholder="Nombre o descripción"  />
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr><td colspan="3" class="py-8 text-center">No hay resultados para los filtros seleccionados.</td></tr>
+    </ng-template>
     <ng-template #header>
       <tr>
         <th>Nombre</th>
@@ -39,5 +44,5 @@
       </tr>
     </ng-template>
   </p-table>
-  }
+
 </div>

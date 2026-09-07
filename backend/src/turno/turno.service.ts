@@ -1,8 +1,11 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { EstadoTurno, Rol } from "../generated/prisma/enums";
 import { DURACION_TURNO_MINUTOS, horaAMinutos, minutosAHora, obtenerDiaSemana } from "./turno.constantes";
 import { CrearTurnoDto } from "./dto/crear-turno.dto";
+import { ReprogramarTurnoDto } from './dto/reprogramar-turno.dto';
+import { Prisma } from '../generated/prisma/client';
+import { PaginacionDto, parametrosPagina } from '../comun/paginacion.dto';
 
 const INCLUDE_TURNO = {
     paciente: {
@@ -30,6 +33,13 @@ export class TurnoService {
 
 
     async crear(datos: CrearTurnoDto, usuarioSolicitante: UsuarioAutenticado) {
+        return this.prisma.$transaction(async tx => {
+            await tx.$queryRaw`SELECT id FROM "Profesional" WHERE id = ${datos.profesionalId} FOR UPDATE`;
+            return this.crearEnTransaccion(datos, usuarioSolicitante, tx);
+        });
+    }
+
+    private async crearEnTransaccion(datos: CrearTurnoDto, usuarioSolicitante: UsuarioAutenticado, tx: Prisma.TransactionClient) {
         const pacienteId = await this.resolverPacienteId(datos, usuarioSolicitante);
 
         const profesional = await this.prisma.profesional.findUnique({
@@ -49,7 +59,8 @@ export class TurnoService {
             datos.profesionalId,
             datos.fecha,
             minutoInicio,
-            minutoFin
+            minutoFin,
+            tx
         );
 
         await this.validarSinSuperposicion(
@@ -57,11 +68,12 @@ export class TurnoService {
             datos.fecha,
             minutoInicio,
             minutoFin,
+            tx,
         );
 
-        const fecha = new Date(`${datos.fecha}T00:00:00`);
+        const fecha = new Date(`${datos.fecha}T00:00:00Z`);
 
-        return this.prisma.turno.create({
+        return tx.turno.create({
             data: {
                 fecha,
                 horaInicio: datos.horaInicio,
@@ -83,6 +95,29 @@ export class TurnoService {
         })
     }
 
+    async buscarPagina(usuario: UsuarioAutenticado, consulta: PaginacionDto) {
+        const { pagina, limite, skip, busqueda } = parametrosPagina(consulta);
+        const rol = await this.construirFiltroPorRol(usuario);
+        const texto = { contains: busqueda, mode: 'insensitive' as const };
+        const where: Prisma.TurnoWhereInput = {
+            ...rol,
+            ...(consulta.fecha ? { fecha: new Date(consulta.fecha + 'T00:00:00Z') } : {}),
+            ...(consulta.estado ? { estado: consulta.estado } : {}),
+            ...(busqueda ? { OR: [
+                { paciente: { usuario: { OR: [{ nombre: texto }, { apellido: texto }] } } },
+                { profesional: { usuario: { OR: [{ nombre: texto }, { apellido: texto }] } } },
+                { profesional: { especialidad: { nombre: texto } } },
+                { horaInicio: texto },
+            ] } : {}),
+        };
+        const [datos, total] = await this.prisma.$transaction([
+            this.prisma.turno.findMany({ where, skip, take: limite, include: INCLUDE_TURNO,
+                orderBy: [{ fecha: 'asc' }, { horaInicio: 'asc' }, { id: 'asc' }] }),
+            this.prisma.turno.count({ where }),
+        ], { isolationLevel: 'RepeatableRead' });
+        return { datos, total, pagina, limite };
+    }
+
     async buscarPorId(id: number, usuarioSolicitante: UsuarioAutenticado) {
         const turno = await this.obtenerTurnoOFallar(id);
         this.validarPuedeVer(turno, usuarioSolicitante);
@@ -98,8 +133,8 @@ export class TurnoService {
         }
 
         return this.prisma.turno.update({
-            where: { id },
-            data: { estado: EstadoTurno.CANCELADO },
+            where: { id, version: turno.version, estado: turno.estado },
+            data: { estado: EstadoTurno.CANCELADO, version: { increment: 1 } },
             include: INCLUDE_TURNO,
         });
     }
@@ -113,8 +148,8 @@ export class TurnoService {
         }
 
         return this.prisma.turno.update({
-            where: { id },
-            data: { estado: EstadoTurno.CONFIRMADO },
+            where: { id, version: turno.version, estado: turno.estado },
+            data: { estado: EstadoTurno.CONFIRMADO, version: { increment: 1 } },
             include: INCLUDE_TURNO,
         });
     }
@@ -128,8 +163,8 @@ export class TurnoService {
         }
 
         return this.prisma.turno.update({
-            where: { id },
-            data: { estado: EstadoTurno.COMPLETADO },
+            where: { id, version: turno.version, estado: turno.estado },
+            data: { estado: EstadoTurno.COMPLETADO, version: { increment: 1 } },
             include: INCLUDE_TURNO,
         });
     }
@@ -148,6 +183,10 @@ export class TurnoService {
         }
 
         const diaSemana = obtenerDiaSemana(new Date(`${fecha}T00:00:00Z`));
+        const bloqueo = await this.prisma.bloqueoDisponibilidad.findUnique({
+            where: { profesionalId_fecha: { profesionalId, fecha: new Date(fecha + 'T00:00:00Z') } },
+        });
+        if (bloqueo) return [];
 
         const disponibilidades = await this.prisma.disponibilidad.findMany({
             where: { profesionalId, diaSemana },
@@ -192,6 +231,64 @@ export class TurnoService {
         return horariosLibres;
     }
 
+    async reprogramar(id: number, datos: ReprogramarTurnoDto, usuario: UsuarioAutenticado) {
+        const inicial = await this.obtenerTurnoOFallar(id);
+        this.validarPuedeVer(inicial, usuario);
+        return this.prisma.$transaction(async tx => {
+            // Mismo orden de bloqueo que reservas y ausencias.
+            await tx.$queryRaw`SELECT id FROM "Profesional" WHERE id = ${inicial.profesionalId} FOR UPDATE`;
+            await tx.$queryRaw`SELECT id FROM "Turno" WHERE id = ${id} FOR UPDATE`;
+            const turno = await tx.turno.findUnique({ where: { id }, include: INCLUDE_TURNO });
+            if (!turno) throw new NotFoundException('Turno no encontrado.');
+            this.validarPuedeVer(turno, usuario);
+            if (turno.version !== datos.version) {
+                throw new ConflictException('El turno cambió desde que lo abriste. Actualizá la página antes de continuar.');
+            }
+            if (turno.estado !== EstadoTurno.PENDIENTE && turno.estado !== EstadoTurno.CONFIRMADO) {
+                throw new BadRequestException('Solo se pueden reprogramar turnos pendientes o confirmados.');
+            }
+            this.validarNoEsPasado(turno.fecha.toISOString().slice(0, 10), turno.horaInicio);
+            this.validarNoEsPasado(datos.fecha, datos.horaInicio);
+            if (turno.fecha.toISOString().slice(0, 10) === datos.fecha && turno.horaInicio === datos.horaInicio) {
+                throw new BadRequestException('Elegí una fecha u hora diferente a la actual.');
+            }
+            const inicio = horaAMinutos(datos.horaInicio);
+            const fin = inicio + DURACION_TURNO_MINUTOS;
+            await this.validarDentroDeDisponibilidad(turno.profesionalId, datos.fecha, inicio, fin, tx);
+            await this.validarSinSuperposicion(turno.profesionalId, datos.fecha, inicio, fin, tx, id);
+            const fecha = new Date(datos.fecha + 'T00:00:00Z');
+            const horaFin = minutosAHora(fin);
+            const actualizado = await tx.turno.update({
+                where: { id },
+                data: { fecha, horaInicio: datos.horaInicio, horaFin, estado: EstadoTurno.PENDIENTE, version: { increment: 1 } },
+                include: INCLUDE_TURNO,
+            });
+            await tx.reprogramacionTurno.create({
+                data: {
+                    turnoId: id, usuarioId: usuario.sub, motivo: datos.motivo.trim(),
+                    fechaAnterior: turno.fecha, horaAnterior: turno.horaInicio, horaFinAnterior: turno.horaFin,
+                    estadoAnterior: turno.estado, fechaNueva: fecha, horaNueva: datos.horaInicio, horaFinNueva: horaFin,
+                },
+            });
+            return actualizado;
+        });
+    }
+
+    async historial(id: number, usuario: UsuarioAutenticado, consulta: PaginacionDto) {
+        const turno = await this.obtenerTurnoOFallar(id);
+        this.validarPuedeVer(turno, usuario);
+        const { pagina, limite, skip } = parametrosPagina(consulta);
+        const where = { turnoId: id };
+        const [datos, total] = await this.prisma.$transaction([
+            this.prisma.reprogramacionTurno.findMany({
+                where, skip, take: limite, orderBy: [{ creadoEn: 'desc' }, { id: 'desc' }],
+                include: { usuario: { select: { nombre: true, apellido: true, rol: true } } },
+            }),
+            this.prisma.reprogramacionTurno.count({ where }),
+        ], { isolationLevel: 'RepeatableRead' });
+        return { datos, total, pagina, limite };
+    }
+
 
 
 
@@ -233,10 +330,15 @@ export class TurnoService {
         fecha: string,
         minutoInicio: number,
         minutoFin: number,
+        tx: Prisma.TransactionClient,
     ) {
+        const bloqueo = await tx.bloqueoDisponibilidad.findUnique({
+            where: { profesionalId_fecha: { profesionalId, fecha: new Date(fecha + 'T00:00:00Z') } },
+        });
+        if (bloqueo) throw new BadRequestException('El profesional no atiende en la fecha seleccionada.');
         const diaSemana = obtenerDiaSemana(new Date(`${fecha}T00:00:00Z`));
 
-        const disponibilidades = await this.prisma.disponibilidad.findMany({
+        const disponibilidades = await tx.disponibilidad.findMany({
             where: { profesionalId, diaSemana },
         });
 
@@ -256,13 +358,16 @@ export class TurnoService {
         fecha: string,
         minutoInicio: number,
         minutoFin: number,
+        tx: Prisma.TransactionClient,
+        excluirTurnoId?: number,
     ) {
-        const fechaDate = new Date(`${fecha}T00:00:00`);
+        const fechaDate = new Date(`${fecha}T00:00:00Z`);
 
-        const turnosDelDia = await this.prisma.turno.findMany({
+        const turnosDelDia = await tx.turno.findMany({
             where: {
                 profesionalId,
                 fecha: fechaDate,
+                ...(excluirTurnoId ? { id: { not: excluirTurnoId } } : {}),
                 estado: { not: EstadoTurno.CANCELADO },
             },
         });

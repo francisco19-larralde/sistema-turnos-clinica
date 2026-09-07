@@ -27,7 +27,10 @@
   </div>
   }
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+  @if (profesional(); as profesionalActual) {
+    <app-bloqueos-profesional [profesionalId]="profesionalActual.id" />
+  }
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start mt-6">
     <section class="card bg-base-100 shadow-md p-6 min-w-0">
       <h2 class="text-lg font-semibold mb-2">Agregar disponibilidad</h2>
 

@@ -1,0 +1,53 @@
+<div class="max-w-5xl mx-auto p-4 sm:p-6 min-w-0">
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <h1 class="text-2xl font-semibold">Detalle del turno</h1>
+    <p-button label="Volver a turnos" icon="pi pi-arrow-left" severity="secondary" [outlined]="true" routerLink="/turnos" />
+  </div>
+  @if (cargando()) { <p role="status">Cargando turno...</p> }
+  @else if (errorCarga()) { <p role="alert" class="text-error">{{ errorCarga() }}</p> }
+  @else if (turno(); as actual) {
+    <section class="rounded-xl border border-base-300 bg-base-100 p-4 sm:p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-lg font-semibold">Turno #{{ actual.id }}</h2>
+        <p-tag [value]="actual.estado" />
+      </div>
+      <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-sm">
+        <div><dt class="text-base-content/60">Fecha y horario actuales</dt>
+          <dd class="font-medium">{{ actual.fecha | date:'dd/MM/yyyy':'UTC' }} · {{ actual.horaInicio }}–{{ actual.horaFin }}</dd>
+        </div>
+        <div><dt class="text-base-content/60">Paciente</dt><dd>{{ actual.paciente.usuario.nombre }} {{ actual.paciente.usuario.apellido }}</dd></div>
+        <div><dt class="text-base-content/60">Profesional</dt><dd>{{ actual.profesional.usuario.nombre }} {{ actual.profesional.usuario.apellido }}</dd></div>
+        <div><dt class="text-base-content/60">Especialidad</dt><dd>{{ actual.profesional.especialidad.nombre }}</dd></div>
+      </dl>
+    </section>
+    @if (puedeReprogramar()) {
+      <section class="rounded-xl border border-base-300 bg-base-100 p-4 sm:p-6 mt-6 min-w-0">
+        <h2 class="text-lg font-semibold">Reprogramar turno</h2>
+        <p class="text-sm text-base-content/70 mt-2 mb-5">
+          Elegí un nuevo horario para el mismo profesional. Al confirmar el cambio, el turno quedará pendiente de confirmación.
+        </p>
+        @if (!guardando()) {
+          <app-matriz-turnos [profesionalId]="actual.profesional.id" (horarioSeleccionado)="seleccion.set($event)" (periodoCambiado)="seleccion.set(null)" />
+        } @else { <p role="status">Guardando el cambio...</p> }
+        <div class="mt-5 flex flex-col gap-2">
+          <label for="motivo-reprogramacion" class="text-sm font-medium">Motivo del cambio (visible en el historial del turno)</label>
+          <input pInputText id="motivo-reprogramacion" [(ngModel)]="motivo" maxlength="200" [disabled]="guardando()" placeholder="Por ejemplo: cambio de disponibilidad" class="w-full" />
+        </div>
+        @if (seleccion(); as nueva) {
+          <div class="rounded-lg bg-base-200 p-4 mt-4 text-sm">
+            <strong>Nuevo horario:</strong> {{ nueva.fecha | date:'dd/MM/yyyy':'UTC' }} a las {{ nueva.hora }}
+          </div>
+        }
+        <div class="flex flex-wrap gap-3 mt-4">
+          <p-button label="Confirmar reprogramación" icon="pi pi-calendar" [loading]="guardando()" [disabled]="!seleccion() || guardando()" (onClick)="guardar()" />
+          <p-button label="Actualizar turno" severity="secondary" [outlined]="true" [disabled]="guardando()" (onClick)="cargar()" />
+        </div>
+      </section>
+    } @else {
+      <p class="text-sm text-base-content/70 mt-4">Solo se pueden reprogramar turnos pendientes o confirmados que aún no hayan pasado.</p>
+    }
+    @if (error()) { <p class="text-error text-sm mt-4" role="alert">{{ error() }}</p> }
+    @if (exito()) { <p class="text-success text-sm mt-4" role="status">{{ exito() }}</p> }
+    <app-historial-turno [turnoId]="actual.id" [revision]="revision()" />
+  }
+</div>

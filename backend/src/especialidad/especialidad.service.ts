@@ -4,8 +4,21 @@ import { CrearEspecialidadDto } from "./dto/crear-especialidad.dto";
 import { ActualizarEspecialidadDto } from "./dto/actualizar-especialidad.dto";
 
 
+import { PaginacionDto, parametrosPagina } from '../comun/paginacion.dto';
+import type { Prisma } from '../generated/prisma/client';
+
 @Injectable()
 export class EspecialidadService {
+    async buscarPagina(consulta: PaginacionDto) {
+      const { pagina, limite, skip, busqueda } = parametrosPagina(consulta);
+      const texto = { contains: busqueda, mode: 'insensitive' as const };
+      const where: Prisma.EspecialidadWhereInput = busqueda ? { OR: [{ nombre: texto }, { descripcion: texto }] } : {};
+      const [datos, total] = await this.prisma.$transaction([
+        this.prisma.especialidad.findMany({ where, skip, take: limite, include: undefined, orderBy: [{ nombre: 'asc' }, { id: 'asc' }] }),
+        this.prisma.especialidad.count({ where }),
+      ], { isolationLevel: 'RepeatableRead' });
+      return { datos, total, pagina, limite };
+    }
 
     constructor(private readonly prisma: PrismaService) { }
 

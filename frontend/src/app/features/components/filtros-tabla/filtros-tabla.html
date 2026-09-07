@@ -1,0 +1,23 @@
+<div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+  <label class="flex min-w-0 flex-1 flex-col gap-2 text-sm font-medium">
+    Buscar
+    <input pInputText type="search" [placeholder]="placeholder" [ngModel]="busqueda"
+      (ngModelChange)="buscar($event)" class="w-full sm:min-w-64" />
+  </label>
+  @if (filtrosTurnos) {
+    <div class="flex min-w-0 flex-col gap-2">
+      <label for="fecha-filtro-turnos" class="text-sm font-medium">Fecha del turno</label>
+      <p-datepicker inputId="fecha-filtro-turnos" [ngModel]="fecha" (ngModelChange)="filtrarFecha($event)"
+        dateFormat="dd/mm/yy" [showIcon]="true" [showClear]="true" [readonlyInput]="true"
+        placeholder="Todas las fechas" appendTo="body" styleClass="w-full" />
+    </div>
+    <div class="flex min-w-0 flex-col gap-2">
+      <label for="estado-filtro-turnos" class="text-sm font-medium">Estado</label>
+      <p-select inputId="estado-filtro-turnos" [options]="estados" [ngModel]="estado"
+        (ngModelChange)="filtrarEstado($event)" placeholder="Todos los estados"
+        [showClear]="true" appendTo="body" class="w-full sm:min-w-48" />
+    </div>
+  }
+  <p-button label="Limpiar filtros" icon="pi pi-filter-slash" severity="secondary"
+    [outlined]="true" (onClick)="limpiar()" styleClass="w-full sm:w-auto" />
+</div>

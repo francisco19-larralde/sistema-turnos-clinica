@@ -4,14 +4,21 @@
 <div class="p-6">
   <h1 class="text-xl font-bold mb-4">Pacientes</h1>
 
-  @if (cargando()) {
-  <div class="text-center py-10 text-base-content/60">Cargando pacientes...</div>
-  } @else if (error()) {
-  <div class="text-center py-10 text-error">{{ error() }}</div>
-  } @else if (pacientes().length === 0) {
-  <div class="text-center py-10 text-base-content/60">No hay pacientes registrados.</div>
-  } @else {
-  <p-table [value]="pacientes()" styleClass="rounded-box overflow-hidden">
+  @if (error()) {
+    <div class="mb-4 text-error" role="alert">{{ error() }} <p-button label="Reintentar" severity="secondary" (onClick)="pagina.cargar()" /></div>
+  }
+
+  <p-table #tabla [value]="pacientes()" styleClass="rounded-box overflow-hidden" [paginator]="true" [rows]="pagina.filas()" [first]="pagina.primero()"
+    [lazy]="true" (onLazyLoad)="pagina.cargar($event)" [totalRecords]="pagina.total()" [loading]="cargando()"
+    [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true"
+    currentPageReportTemplate="{first}–{last} de {totalRecords}" [pageLinks]="3"
+    [globalFilterFields]="['usuario.nombre', 'usuario.apellido', 'dni', 'usuario.email', 'telefono']">
+    <ng-template #caption>
+      <app-filtros-tabla [tabla]="tabla" placeholder="Nombre, apellido, DNI o email"  />
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr><td colspan="5" class="py-8 text-center">No hay resultados para los filtros seleccionados.</td></tr>
+    </ng-template>
     <ng-template #header>
       <tr>
         <th>Nombre</th>
@@ -36,5 +43,5 @@
       </tr>
     </ng-template>
   </p-table>
-  }
+
 </div>

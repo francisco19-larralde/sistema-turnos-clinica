@@ -1,3 +1,11 @@
+<div class="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
+  <p class="font-semibold text-sm" aria-live="polite">{{ rangoVisible() }}</p>
+  <div class="flex flex-wrap gap-2">
+    <p-button label="Anterior" icon="pi pi-chevron-left" severity="secondary" [outlined]="true" [disabled]="semana() === 0" (onClick)="cambiarSemana(-1)" />
+    <p-button label="Hoy" severity="secondary" [outlined]="true" (onClick)="volverAHoy()" />
+    <p-button label="Siguiente" icon="pi pi-chevron-right" iconPos="right" (onClick)="cambiarSemana(1)" />
+  </div>
+</div>
 @if (cargando()) {
 <div class="text-center py-6 text-base-content/60">Cargando disponibilidad...</div>
 } @else if (error()) {
@@ -45,7 +53,7 @@
     <span class="w-3 h-3 rounded bg-success inline-block"></span> Disponible
   </span>
   <span class="flex items-center gap-1">
-    <span class="w-3 h-3 rounded bg-error opacity-50 inline-block"></span> Ocupado
+    <span class="w-3 h-3 rounded bg-error opacity-50 inline-block"></span> No disponible (ocupado, pasado o bloqueado)
   </span>
   <span class="flex items-center gap-1">
     <span class="w-3 h-3 rounded bg-base-300 inline-block"></span> No atiende

@@ -9,8 +9,21 @@ const SELECCION_USUARIO = {
     select: { id: true, nombre: true, apellido: true, email: true, rol: true },
 } as const;
 
+import { PaginacionDto, parametrosPagina } from '../comun/paginacion.dto';
+import type { Prisma } from '../generated/prisma/client';
+
 @Injectable()
 export class ProfesionalService {
+    async buscarPagina(consulta: PaginacionDto) {
+        const { pagina, limite, skip, busqueda } = parametrosPagina(consulta);
+        const texto = { contains: busqueda, mode: 'insensitive' as const };
+        const where: Prisma.ProfesionalWhereInput = busqueda ? { OR: [{ matricula: texto }, { especialidad: { nombre: texto } }, { usuario: { OR: [{ nombre: texto }, { apellido: texto }, { email: texto }] } }] } : {};
+        const [datos, total] = await this.prisma.$transaction([
+            this.prisma.profesional.findMany({ where, skip, take: limite, include: { especialidad: true, usuario: SELECCION_USUARIO }, orderBy: [{ creadoEn: 'desc' }, { id: 'desc' }] }),
+            this.prisma.profesional.count({ where }),
+        ], { isolationLevel: 'RepeatableRead' });
+        return { datos, total, pagina, limite };
+    }
     constructor(private readonly prisma: PrismaService) { }
 
     async crear(datos: CrearProfesionalDto) {
