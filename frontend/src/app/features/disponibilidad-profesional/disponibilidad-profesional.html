@@ -1,0 +1,151 @@
+<div class="p-6">
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <h1 class="text-xl font-bold">Disponibilidad del profesional</h1>
+
+    <p-button label="Volver a profesionales" icon="pi pi-arrow-left" severity="secondary" [outlined]="true"
+      routerLink="/profesionales" />
+  </div>
+
+  @if (cargando()) {
+  <p class="text-center py-10" role="status">
+    Cargando disponibilidad...
+  </p>
+  } @else if (errorCarga()) {
+  <p class="text-error" role="alert">{{ errorCarga() }}</p>
+  } @else {
+  @if (profesional(); as profesionalActual) {
+  <div class="mb-6">
+    <h2 class="text-lg font-semibold">
+      {{ profesionalActual.usuario.nombre }}
+      {{ profesionalActual.usuario.apellido }}
+    </h2>
+
+    <p class="text-sm opacity-70">
+      {{ profesionalActual.especialidad.nombre }}
+      · Matrícula: {{ profesionalActual.matricula }}
+    </p>
+  </div>
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+    <section class="card bg-base-100 shadow-md p-6 min-w-0">
+      <h2 class="text-lg font-semibold mb-2">Agregar disponibilidad</h2>
+
+      <p class="text-sm opacity-70 mb-6">
+        Indicá el día y la franja horaria de atención semanal.
+        Podés agregar varias franjas para un mismo día.
+      </p>
+
+      <form [formGroup]="formulario" (ngSubmit)="enviar()" class="flex flex-col gap-4">
+        <fieldset [disabled]="guardando()" class="flex flex-col gap-4 border-0 p-0 m-0 min-w-0">
+          <div class="flex flex-col gap-1">
+            <label for="diaSemana" class="text-sm font-medium">
+              Día de la semana
+            </label>
+
+            <select id="diaSemana" formControlName="diaSemana" class="select select-bordered w-full">
+              @for (dia of dias; track dia.valor) {
+              <option [value]="dia.valor">{{ dia.nombre }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="horaInicio" class="text-sm font-medium">
+              Hora de inicio
+            </label>
+
+            <input pInputText id="horaInicio" type="time" step="60" formControlName="horaInicio" class="w-full" />
+
+            @if (
+            formulario.controls.horaInicio.touched &&
+            formulario.controls.horaInicio.invalid
+            ) {
+            <small class="text-error">
+              Ingresá una hora de inicio válida.
+            </small>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="horaFin" class="text-sm font-medium">
+              Hora de fin
+            </label>
+
+            <input pInputText id="horaFin" type="time" step="60" formControlName="horaFin" class="w-full" />
+
+            @if (
+            formulario.controls.horaFin.touched &&
+            formulario.controls.horaFin.invalid
+            ) {
+            <small class="text-error">
+              Ingresá una hora de fin válida.
+            </small>
+            }
+          </div>
+        </fieldset>
+
+        @if (
+        formulario.hasError('rangoHorario') &&
+        (formulario.controls.horaInicio.touched ||
+        formulario.controls.horaFin.touched)
+        ) {
+        <p class="text-error text-sm" role="alert">
+          La hora de fin debe ser posterior a la hora de inicio.
+        </p>
+        }
+
+        @if (error()) {
+        <p class="text-error text-sm" role="alert">{{ error() }}</p>
+        }
+
+        @if (exito()) {
+        <p class="text-success text-sm" role="status">{{ exito() }}</p>
+        }
+
+        <div class="mt-2">
+          <p-button type="submit" label="Agregar disponibilidad" icon="pi pi-plus" [loading]="guardando()"
+            [disabled]="guardando()" />
+        </div>
+      </form>
+    </section>
+
+    <section class="card bg-base-100 shadow-md p-6 min-w-0">
+      <h2 class="text-lg font-semibold mb-4">
+        Disponibilidades cargadas
+      </h2>
+
+      @if (disponibilidades().length === 0) {
+      <p class="text-sm opacity-70">
+        Este profesional todavía no tiene disponibilidad cargada.
+      </p>
+      } @else {
+      <div class="overflow-x-auto">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th scope="col">Día</th>
+              <th scope="col">Desde</th>
+              <th scope="col">Hasta</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+            disponibilidad of disponibilidades();
+            track disponibilidad.id
+            ) {
+            <tr>
+              <td>{{ nombreDia(disponibilidad.diaSemana) }}</td>
+              <td>{{ disponibilidad.horaInicio }}</td>
+              <td>{{ disponibilidad.horaFin }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </section>
+  </div>
+  }
+</div>

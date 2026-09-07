@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class ProfesionalesLista implements OnInit {
   private readonly profesionalService = inject(ProfesionalService);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
+  readonly authService = inject(AuthService);
 
   readonly profesionales = signal<Profesional[]>([]);
   readonly cargando = signal(true);

@@ -12,6 +12,8 @@ import { PacientesLista } from './features/pacientes/pacientes-lista/pacientes-l
 import { PacienteFormulario } from './features/pacientes/paciente-formulario/paciente-formulario';
 import { TurnosLista } from './features/turnos/turnos-lista/turnos-lista';
 import { TurnoFormularioComponent } from './features/turnos/turnos-formulario/turnos-formulario';
+import { DisponibilidadProfesional } from './features/disponibilidad-profesional/disponibilidad-profesional';
+import { administrativoGuard } from './core/guards/administrativo.guard';
 
 export const routes: Routes = [
   {
@@ -44,7 +46,7 @@ export const routes: Routes = [
   },
   {
     path: 'profesionales',
-    canActivate: [authGuard],
+    canActivate: [authGuard, administrativoGuard],
     children: [
       {
         path: '',
@@ -57,6 +59,10 @@ export const routes: Routes = [
       {
         path: ':id/editar',
         component: ProfesionalFormulario,
+      },
+      {
+        path: ':id/disponibilidad',
+        component: DisponibilidadProfesional,
       },
     ],
   },

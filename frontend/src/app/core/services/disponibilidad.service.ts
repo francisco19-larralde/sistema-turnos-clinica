@@ -17,4 +17,10 @@ export class DisponibilidadService {
     );
   }
 
+  crear(profesionalId: number, datos: Pick<Disponibilidad, 'diaSemana' | 'horaInicio' | 'horaFin'>): Observable<Disponibilidad> {
+    return this.http.post<Disponibilidad>(
+      `${environment.apiUrl}/disponibilidad/profesional/${profesionalId}/disponibilidades`, datos
+    );
+  }
+
 }

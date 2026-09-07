@@ -35,11 +35,15 @@
         <td>{{ profesional.especialidad.nombre }}</td>
         <td>{{ profesional.matricula }}</td>
         <td>{{ profesional.usuario.email }}</td>
-        <td class="flex gap-2">
+        <td class="flex flex-wrap gap-2">
           <a [routerLink]="[profesional.id, 'editar']">
             <p-button icon="pi pi-pencil" severity="secondary" [text]="true" />
           </a>
           <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="confirmarEliminacion(profesional)" />
+          @if (authService.usuarioActual()?.rol === 'ADMINISTRATIVO') {
+          <p-button icon="pi pi-calendar" severity="secondary" [text]="true"
+            [routerLink]="['/profesionales', profesional.id, 'disponibilidad']" />
+          }
         </td>
       </tr>
     </ng-template>

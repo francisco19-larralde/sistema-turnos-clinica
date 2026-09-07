@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { DisponibilidadService } from '../../core/services/disponibilidad.service';
-import { TurnoService } from '../../core/services/turno.service';
-import { DiaSemana, Disponibilidad } from '../../core/models/disponibilidad.model';
+import { DisponibilidadService } from '../../../core/services/disponibilidad.service';
+import { TurnoService } from '../../../core/services/turno.service';
+import { DiaSemana, Disponibilidad } from '../../../core/models/disponibilidad.model';
 
 
 const DURACION_TURNO_MINUTOS = 30;

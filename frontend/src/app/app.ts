@@ -1,12 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
+import { Navbar } from './features/components/navbar/navbar';
 
 @Component({
-  imports: [RouterOutlet, ButtonModule],
+  imports: [RouterOutlet, Navbar],
   selector: 'app-root',
   templateUrl: './app.html',
+  styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('frontend');
-}
+export class App {}

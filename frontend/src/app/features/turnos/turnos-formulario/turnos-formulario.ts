@@ -5,7 +5,7 @@ import { SelectModule } from 'primeng/select';
 import { Profesional } from '../../../core/models/profesional.model';
 import { ProfesionalService } from '../../../core/services/profesional.service';
 import { TurnoService } from '../../../core/services/turno.service';
-import { MatrizTurnos } from '../turnos';
+import { MatrizTurnos } from '../turnos-matriz/turnos';
 
 
 @Component({
