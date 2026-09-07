@@ -1,0 +1,23 @@
+<footer class="bg-[#103e39] text-white">
+  <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr] lg:px-10">
+    <div>
+      <a routerLink="/" class="inline-flex items-center gap-3 text-2xl font-semibold tracking-tight"><span class="grid size-10 place-items-center rounded-xl bg-white/10"><i class="pi pi-plus" aria-hidden="true"></i></span><span>serena<span class="text-teal-300">.</span></span></a>
+      <p class="mt-5 max-w-xs text-sm leading-7 text-teal-100/75">Más cerca de tu bienestar.<br>Un espacio para cuidar tu salud y organizar tus turnos con tranquilidad.</p>
+    </div>
+    <nav aria-label="Enlaces de la clínica" class="flex flex-col items-start gap-3 text-sm text-teal-100/80">
+      <h2 class="mb-2 font-semibold text-white">Conocenos</h2>
+      <a routerLink="/" fragment="como-funciona" class="hover:text-white hover:underline">Cómo funciona</a>
+      <a routerLink="/" fragment="cuidarte" class="hover:text-white hover:underline">Nuestra propuesta</a>
+      <a routerLink="/" fragment="preguntas" class="hover:text-white hover:underline">Preguntas frecuentes</a>
+    </nav>
+    <nav aria-label="Accesos de pacientes" class="flex flex-col items-start gap-3 text-sm text-teal-100/80">
+      <h2 class="mb-2 font-semibold text-white">Tu espacio</h2>
+      <a routerLink="/login" class="hover:text-white hover:underline">Iniciar sesión</a>
+      <a routerLink="/registro" class="hover:text-white hover:underline">Crear una cuenta</a>
+    </nav>
+  </div>
+  <div class="mx-auto flex max-w-7xl flex-col gap-2 border-t border-white/15 px-6 py-6 text-xs text-teal-100/60 sm:flex-row sm:justify-between lg:px-10">
+    <span>© {{ anio }} Serena · Salud y bienestar</span>
+    <span>Proyecto de portfolio · Clínica ficticia</span>
+  </div>
+</footer>

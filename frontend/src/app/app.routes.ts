@@ -18,6 +18,12 @@ import { AgendaDiaria } from './features/turnos/agenda-diaria/agenda-diaria';
 
 export const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./features/home/home').then(m => m.Home),
+  },
+  {
     path: 'agenda',
     canActivate: [authGuard, administrativoGuard],
     component: AgendaDiaria,
@@ -111,6 +117,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'inicio',
+    redirectTo: '',
   }
 ];

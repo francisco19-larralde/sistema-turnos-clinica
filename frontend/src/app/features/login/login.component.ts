@@ -1,6 +1,7 @@
 import { Component, inject, signal } from "@angular/core";
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { PublicFooter } from '../components/public-footer/public-footer';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../core/services/auth.service';
@@ -8,7 +9,7 @@ import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, RouterLink],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, RouterLink, PublicFooter],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
@@ -18,6 +19,8 @@ export class LoginComponent {
 
 
   readonly cargando = signal(false);
+  readonly mostrarClave = signal(false);
+  readonly registroExitoso = inject(ActivatedRoute).snapshot.queryParamMap.get('registro') === 'ok';
   readonly mensajeError = signal<string | null>(null);
 
   readonly formulario = this.fb.group({
@@ -26,6 +29,7 @@ export class LoginComponent {
   })
 
   enviar(): void {
+    if (this.cargando()) return;
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;

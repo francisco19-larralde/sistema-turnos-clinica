@@ -1,72 +1,22 @@
-<div class="min-h-screen flex items-center justify-center bg-base-200 p-4">
-  <div class="card bg-base-100 shadow-md w-full max-w-sm p-6">
-    <h1 class="text-xl font-bold mb-6 text-center">Registrarse</h1>
-
-    <form [formGroup]="formulario" (ngSubmit)="enviar()" class="flex flex-col gap-4">
-
-      <div class="flex flex-col gap-1">
-        <label for="nombre" class="text-sm font-medium">Nombre</label>
-        <input pInputText id="nombre" type="text" formControlName="nombre" class="w-full" />
-        @if (formulario.get('nombre')?.invalid && formulario.get('nombre')?.touched) {
-        <span class="text-error text-sm">El nombre es obligatorio</span>
-        }
+<div class="bg-[#f8faf7] px-5 py-10 text-[#183c36] sm:py-14">
+  <div class="mx-auto grid max-w-6xl grid-cols-1 overflow-hidden rounded-3xl border border-teal-900/10 bg-white shadow-sm lg:grid-cols-[0.85fr_1.15fr]">
+    <aside class="relative flex flex-col justify-between overflow-hidden bg-[#123f39] p-7 text-white sm:p-10">
+      <div class="relative z-10">
+        <p class="text-xs font-semibold tracking-[0.18em] text-teal-200">BIENVENIDO A SERENA</p>
+        <h1 class="mt-6 text-4xl font-medium leading-tight tracking-tight sm:text-5xl">Un primer paso.<br>Un nuevo espacio<br class="hidden lg:block"> para cuidarte.</h1>
+        <p class="mt-6 max-w-sm text-sm leading-7 text-teal-100/75">Creá tu cuenta y organizá tus turnos con la tranquilidad de tener todo en un mismo lugar.</p>
       </div>
-
-      <div class="flex flex-col gap-1">
-        <label for="apellido" class="text-sm font-medium">Apellido</label>
-        <input pInputText id="apellido" type="text" formControlName="apellido" class="w-full" />
-        @if (formulario.get('apellido')?.invalid && formulario.get('apellido')?.touched) {
-        <span class="text-error text-sm">El apellido es obligatorio</span>
-        }
+      <div class="mt-9 hidden lg:block">
+        <img src="/images/consulta-clinica.png" alt="Atención cercana en un consultorio" width="1536" height="1024" class="h-56 w-full rounded-2xl object-cover object-[65%_center]" />
+        <p class="mt-5 flex items-center gap-2 text-xs text-teal-100/80"><i class="pi pi-heart" aria-hidden="true"></i> Tu bienestar, más cerca.</p>
       </div>
-
-      <div class="flex flex-col gap-1">
-        <label for="email" class="text-sm font-medium">Email</label>
-        <input pInputText id="email" type="email" formControlName="email" class="w-full" />
-        @if (formulario.get('email')?.invalid && formulario.get('email')?.touched) {
-        <span class="text-error text-sm">Ingresá un email válido</span>
-        }
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label for="contrasena" class="text-sm font-medium">Contraseña</label>
-        <input pInputText id="contrasena" type="password" formControlName="contrasena" class="w-full" />
-        @if (formulario.get('contrasena')?.invalid && formulario.get('contrasena')?.touched) {
-        <span class="text-error text-sm">Mínimo 8 caracteres</span>
-        }
-      </div>
-
-      @if (mensajeError()) {
-      <div class="text-error text-sm text-center">{{ mensajeError() }}</div>
-      }
-
-      <div class="flex flex-col gap-1">
-        <label for="dni" class="text-sm font-medium">DNI</label>
-        <input pInputText id="dni" type="text" formControlName="dni" class="w-full" />
-        @if (formulario.get('dni')?.invalid && formulario.get('dni')?.touched) {
-        <span class="text-error text-sm">El DNI es obligatorio</span>
-        }
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label for="fechaNacimiento" class="text-sm font-medium">Fecha de Nacimiento</label>
-        <input pInputText id="fechaNacimiento" type="date" formControlName="fechaNacimiento" class="w-full" />
-        @if (formulario.get('fechaNacimiento')?.invalid && formulario.get('fechaNacimiento')?.touched) {
-        <span class="text-error text-sm">La fecha de nacimiento es obligatoria</span>
-        }
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label for="telefono" class="text-sm font-medium">Teléfono</label>
-        <input pInputText id="telefono" type="text" formControlName="telefono" class="w-full" />
-      </div>
-
-      <p-button type="submit" label="Registrar" styleClass="w-full mt-2" [loading]="cargando()" />
-
-      <p class="text-sm text-center mt-4">
-        ¿Ya tenés cuenta?
-        <a routerLink="/login" class="text-primary font-medium">Iniciar Sesion</a>
-      </p>
-    </form>
+    </aside>
+    <section class="min-w-0 p-6 sm:p-10 lg:p-12" aria-labelledby="titulo-registro">
+      <p class="mb-2 text-xs font-semibold tracking-[0.14em] text-teal-700">TU CUENTA PERSONAL</p>
+      <h2 id="titulo-registro" class="text-3xl font-semibold tracking-tight">Empecemos por conocerte.</h2>
+      <p class="mb-7 mt-3 text-sm leading-6 text-slate-500">Completá tus datos para reservar tu primer turno.</p>
+      <app-formulario-registro />
+    </section>
   </div>
 </div>
+<app-public-footer />
