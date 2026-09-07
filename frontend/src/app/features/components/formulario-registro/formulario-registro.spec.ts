@@ -40,7 +40,7 @@ describe('Formulario de registro compartido', () => {
     componente.enviar();
     componente.enviar();
     expect(servicio.registro).toHaveBeenCalledTimes(1);
-    expect(servicio.registro.mock.calls[0][0].nombre).toBe('Ana');
+    expect(servicio.registro).toHaveBeenCalledWith(expect.objectContaining({ nombre: 'Ana' }));
     respuesta.next({});
     expect(router.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { registro: 'ok' } });
   });

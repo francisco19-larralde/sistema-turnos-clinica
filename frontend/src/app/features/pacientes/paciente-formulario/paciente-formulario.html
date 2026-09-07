@@ -3,6 +3,10 @@
     <h1 class="text-xl font-bold mb-6">Editar paciente</h1>
 
     <form [formGroup]="formulario" (ngSubmit)="enviar()" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1"><label for="paciente-nombre" class="text-sm font-medium">Nombre</label><input pInputText id="paciente-nombre" formControlName="nombre" class="w-full" /></div>
+      <div class="flex flex-col gap-1"><label for="paciente-apellido" class="text-sm font-medium">Apellido</label><input pInputText id="paciente-apellido" formControlName="apellido" class="w-full" /></div>
+      <div class="flex flex-col gap-1"><label for="paciente-email" class="text-sm font-medium">Email</label><input pInputText id="paciente-email" type="email" formControlName="email" class="w-full" /></div>
+      <div class="flex flex-col gap-1"><label for="paciente-clave" class="text-sm font-medium">Nueva contraseña (opcional)</label><input pInputText id="paciente-clave" type="password" autocomplete="new-password" formControlName="contrasena" class="w-full" /></div>
       <div class="flex flex-col gap-1">
         <label class="text-sm font-medium">DNI</label>
         <input pInputText formControlName="dni" class="w-full" />
@@ -10,7 +14,7 @@
 
       <div class="flex flex-col gap-1">
         <label class="text-sm font-medium">Fecha de nacimiento</label>
-        <p-datepicker formControlName="fechaNacimiento" dateFormat="dd/mm/yy" [showIcon]="true" />
+        <input pInputText type="date" formControlName="fechaNacimiento" class="w-full" />
       </div>
 
       <div class="flex flex-col gap-1">

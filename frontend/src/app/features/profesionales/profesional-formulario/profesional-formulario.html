@@ -5,7 +5,6 @@
     </h1>
 
     <form [formGroup]="formulario" (ngSubmit)="enviar()" class="flex flex-col gap-4">
-      @if (!esEdicion()) {
       <div class="flex flex-col gap-1">
         <label for="nombre" class="text-sm font-medium">Nombre</label>
         <input pInputText id="nombre" formControlName="nombre" class="w-full" />
@@ -22,10 +21,9 @@
       </div>
 
       <div class="flex flex-col gap-1">
-        <label for="contrasena" class="text-sm font-medium">Contraseña inicial</label>
-        <input pPassword id="contrasena" formControlName="contrasena" class="w-full" [feedback]="false" />
+        <label for="contrasena" class="text-sm font-medium">{{ esEdicion() ? 'Nueva contraseña (opcional)' : 'Contraseña inicial' }}</label>
+        <input pPassword type="password" autocomplete="new-password" id="contrasena" formControlName="contrasena" class="w-full" [feedback]="false" />
       </div>
-      }
 
       <div class="flex flex-col gap-1">
         <label for="matricula" class="text-sm font-medium">Matrícula</label>

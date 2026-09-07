@@ -16,7 +16,9 @@ import { DisponibilidadProfesional } from './features/disponibilidad-profesional
 import { administrativoGuard } from './core/guards/administrativo.guard';
 import { AgendaDiaria } from './features/turnos/agenda-diaria/agenda-diaria';
 
+
 export const routes: Routes = [
+  { path: 'perfil', canActivate: [authGuard], loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil) },
   {
     path: '',
     pathMatch: 'full',
@@ -40,7 +42,7 @@ export const routes: Routes = [
   },
   {
     path: 'especialidades',
-    canActivate: [authGuard],
+    canActivate: [authGuard, administrativoGuard],
     children: [
       {
         path: '',
@@ -85,10 +87,12 @@ export const routes: Routes = [
       {
         path: '',
         component: PacientesLista,
+        canActivate: [administrativoGuard],
       },
       {
         path: ':id/editar',
         component: PacienteFormulario,
+        canActivate: [administrativoGuard],
       },
     ],
   },

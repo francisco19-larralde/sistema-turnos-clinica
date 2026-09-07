@@ -14,7 +14,7 @@ export class Navbar {
   readonly authService = inject(AuthService);
   readonly menuAbierto = signal(false);
   readonly enlaces = computed(() => {
-    const base = [{ texto: 'Inicio', ruta: '/inicio' }, { texto: 'Turnos', ruta: '/turnos' }];
+    const base = [{ texto: 'Inicio', ruta: '/inicio' }, { texto: 'Turnos', ruta: '/turnos' }, { texto: 'Mi perfil', ruta: '/perfil' }];
     return this.authService.usuarioActual()?.rol === 'ADMINISTRATIVO'
       ? [...base, { texto: 'Agenda', ruta: '/agenda' }, { texto: 'Profesionales', ruta: '/profesionales' }, { texto: 'Pacientes', ruta: '/pacientes' }, { texto: 'Especialidades', ruta: '/especialidades' }]
       : base;

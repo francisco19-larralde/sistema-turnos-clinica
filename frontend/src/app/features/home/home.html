@@ -1,90 +1,369 @@
-<div class="bg-[#f8faf7] text-[#183c36]">
-  <section class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-6 pb-16 pt-10 lg:grid-cols-2 lg:gap-14 lg:px-10 lg:pb-24 lg:pt-16">
-    <div>
-      <p class="mb-6 inline-flex items-center gap-2 rounded-full border border-teal-900/10 bg-white px-4 py-2 text-xs font-semibold tracking-wide text-teal-800"><span class="size-1.5 rounded-full bg-teal-600"></span> TU BIENESTAR, MÁS CERCA</p>
-      <h1 class="max-w-xl text-5xl font-semibold leading-[1.08] tracking-[-0.055em] sm:text-7xl xl:text-[5.3rem]">Tu salud,<br><span class="text-teal-700">a tu tiempo.</span></h1>
-      <p class="mt-7 max-w-md text-base leading-8 text-slate-600 sm:text-lg">Cuidarte empieza con un primer paso. Encontrá a tu profesional y reservá tu próximo turno de una manera simple, estés donde estés.</p>
-      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <p-button label="Quiero reservar un turno" icon="pi pi-arrow-up-right" iconPos="right" routerLink="/registro" styleClass="w-full !rounded-xl !border-teal-800 !bg-teal-800 !px-6 !py-4 !text-white hover:!bg-teal-900" />
-        <a routerLink="/" fragment="como-funciona" class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-4 text-sm font-semibold text-teal-900 hover:bg-teal-50">Cómo funciona <i class="pi pi-arrow-down text-xs" aria-hidden="true"></i></a>
+<div class="min-h-screen bg-[#f3f6f1] text-[#173c36]">
+  <!-- HERO -->
+  <section class="relative overflow-hidden border-b border-[#d8e2da]">
+    <div
+      class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 pb-20 pt-10 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:pb-28 lg:pt-16">
+
+      <!-- Copy -->
+      <div class="relative z-10">
+        <p
+          class="mb-6 inline-flex items-center gap-2 rounded-full border border-[#b9ccc1] bg-[#e8eee9] px-4 py-2 text-xs font-bold tracking-wide text-[#21665b]">
+          <span class="size-1.5 rounded-full bg-[#3d8a78]"></span>
+          TU BIENESTAR, MÁS CERCA
+        </p>
+
+        <h1 class="max-w-2xl text-5xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-7xl xl:text-[5.3rem]">
+          Tu salud,
+          <br />
+          <span class="text-[#24796b]">a tu tiempo.</span>
+        </h1>
+
+        <p class="mt-7 max-w-lg text-base leading-8 text-[#5c6e68] sm:text-lg">
+          Cuidarte empieza con un primer paso. Encontrá a tu profesional,
+          elegí el horario que te quede cómodo y reservá tu turno online.
+        </p>
+
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+          <p-button label="Reservá tu próximo turno" icon="pi pi-arrow-up-right" iconPos="right" routerLink="/registro"
+            styleClass="w-full !rounded-xl !border-[#155c52] !bg-[#155c52] !px-6 !py-4 !text-white hover:!border-[#0d463e] hover:!bg-[#0d463e] sm:w-auto" />
+
+          <a routerLink="/" fragment="como-funciona"
+            class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-4 text-sm font-semibold text-[#155c52] transition-colors hover:bg-[#e5eee8]">
+            Cómo funciona
+            <i class="pi pi-arrow-down text-xs" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div class="mt-9 flex flex-wrap gap-x-7 gap-y-3 text-xs font-medium text-[#64756f]">
+          <span class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-[#24796b]" aria-hidden="true"></i>
+            Sin llamadas
+          </span>
+
+          <span class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-[#24796b]" aria-hidden="true"></i>
+            Desde cualquier dispositivo
+          </span>
+
+          <span class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-[#24796b]" aria-hidden="true"></i>
+            Todo en un solo lugar
+          </span>
+        </div>
       </div>
-      <div class="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs text-slate-500">
-        <span class="flex items-center gap-2"><i class="pi pi-check-circle text-teal-700" aria-hidden="true"></i> Sin llamadas</span>
-        <span class="flex items-center gap-2"><i class="pi pi-check-circle text-teal-700" aria-hidden="true"></i> Desde cualquier dispositivo</span>
+
+      <!-- Image -->
+      <div class="relative min-w-0 pb-7 pl-3 sm:pl-8 lg:pl-0">
+        <div class="absolute -inset-4 rounded-[3rem] bg-[#dce8df]"></div>
+
+        <img src="/images/consulta-clinica.png" alt="Una médica escucha a una paciente en un consultorio luminoso"
+          width="1536" height="1024" fetchpriority="high"
+          class="relative h-[360px] w-full rounded-[2rem] rounded-tr-[6rem] object-cover object-[63%_center] shadow-xl shadow-[#123f39]/10 sm:h-[460px] lg:h-[540px]" />
+
+        <div
+          class="absolute -bottom-1 left-0 flex max-w-[90%] items-center gap-4 rounded-2xl border border-[#d8e2da] bg-white p-5 shadow-xl shadow-[#123f39]/10 sm:left-3 lg:-left-8">
+          <span class="grid size-12 shrink-0 place-items-center rounded-full bg-[#e5efcf] text-xl text-[#155c52]">
+            <i class="pi pi-heart" aria-hidden="true"></i>
+          </span>
+
+          <div>
+            <p class="font-semibold text-[#173c36]">Primero vos. Siempre.</p>
+            <p class="mt-1 text-xs leading-5 text-[#697a74]">
+              Atención cercana, desde el primer clic.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="absolute right-4 top-5 rounded-full border border-white/60 bg-white/90 px-4 py-2 text-xs font-semibold text-[#155c52] shadow-sm backdrop-blur sm:right-6">
+          <i class="pi pi-sparkles mr-1 text-[#3d8a78]" aria-hidden="true"></i>
+          Espacio para cuidarte
+        </div>
       </div>
-    </div>
-    <div class="relative min-w-0 pb-6 pl-4 sm:pl-8 lg:pl-0">
-      <img src="/images/consulta-clinica.png" alt="Una médica escucha a una paciente en un consultorio luminoso" width="1536" height="1024" fetchpriority="high" class="h-[360px] w-full rounded-[2rem] rounded-tr-[6rem] object-cover object-[63%_center] sm:h-[460px] lg:h-[540px]" />
-      <div class="absolute -left-1 bottom-0 flex max-w-[90%] items-center gap-4 rounded-2xl border border-teal-900/5 bg-white p-5 shadow-lg shadow-teal-950/5 sm:left-0 lg:-left-7">
-        <span class="grid size-12 shrink-0 place-items-center rounded-full bg-[#edf4dc] text-xl text-teal-800"><i class="pi pi-heart" aria-hidden="true"></i></span>
-        <div><p class="font-semibold">Primero vos. Siempre.</p><p class="mt-1 text-xs leading-5 text-slate-500">Atención cercana, desde el primer clic.</p></div>
-      </div>
-      <div class="absolute right-4 top-5 rounded-full bg-white/90 px-4 py-2 text-xs font-medium backdrop-blur sm:right-6"><i class="pi pi-sparkles mr-1 text-teal-700" aria-hidden="true"></i> Espacio para cuidarte</div>
     </div>
   </section>
 
-  <section class="border-y border-teal-900/10 bg-[#edf3ed]" aria-label="Beneficios">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-8 sm:grid-cols-3 lg:px-10">
-      <div class="flex items-center gap-4"><i class="pi pi-calendar-clock text-2xl text-teal-700" aria-hidden="true"></i><div><h2 class="font-semibold">Tu agenda, más simple</h2><p class="mt-1 text-sm text-slate-500">Horarios disponibles a un clic.</p></div></div>
-      <div class="flex items-center gap-4"><i class="pi pi-mobile text-2xl text-teal-700" aria-hidden="true"></i><div><h2 class="font-semibold">Donde estés</h2><p class="mt-1 text-sm text-slate-500">Reservá desde tu compu o celular.</p></div></div>
-      <div class="flex items-center gap-4"><i class="pi pi-sync text-2xl text-teal-700" aria-hidden="true"></i><div><h2 class="font-semibold">Planes que cambian</h2><p class="mt-1 text-sm text-slate-500">Reprogramá desde tu cuenta.</p></div></div>
+  <!-- BENEFICIOS -->
+  <section class="border-b border-[#cbd9d0] bg-[#e4ede6]" aria-label="Beneficios">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-0 px-6 lg:grid-cols-3 lg:px-10">
+
+      <div class="flex items-center gap-4 border-b border-[#cbd9d0] py-7 lg:border-b-0 lg:border-r lg:pr-8">
+        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-white/70 text-[#24796b]">
+          <i class="pi pi-calendar-clock text-xl" aria-hidden="true"></i>
+        </span>
+
+        <div>
+          <h2 class="font-semibold">Tu agenda, más simple</h2>
+          <p class="mt-1 text-sm text-[#60736c]">
+            Horarios disponibles a un clic.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 border-b border-[#cbd9d0] py-7 lg:border-b-0 lg:border-r lg:px-8">
+        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-white/70 text-[#24796b]">
+          <i class="pi pi-mobile text-xl" aria-hidden="true"></i>
+        </span>
+
+        <div>
+          <h2 class="font-semibold">Donde estés</h2>
+          <p class="mt-1 text-sm text-[#60736c]">
+            Reservá desde tu compu o celular.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 py-7 lg:pl-8">
+        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-white/70 text-[#24796b]">
+          <i class="pi pi-sync text-xl" aria-hidden="true"></i>
+        </span>
+
+        <div>
+          <h2 class="font-semibold">Flexibilidad para tu agenda</h2>
+          <p class="mt-1 text-sm text-[#60736c]">
+            Reprogramá cuando lo necesites.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="como-funciona" class="mx-auto max-w-7xl scroll-mt-28 px-6 py-20 lg:px-10 lg:py-24">
-    <div class="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-      <div><p class="text-xs font-bold tracking-[0.18em] text-teal-700">ASÍ DE SIMPLE</p><h2 class="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">Tu próximo turno,<br>en tres pasos.</h2></div>
-      <p class="max-w-sm text-sm leading-7 text-slate-500">Menos tiempo organizando.<br>Más tiempo para lo que te hace bien.</p>
-    </div>
-    <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-      @for (paso of pasos; track paso.numero) {
-        <article class="border-t border-teal-900/15 pt-6">
-          <div class="flex items-center justify-between"><span class="text-4xl font-light tracking-tight text-teal-900/35">{{ paso.numero }}</span><span class="grid size-12 place-items-center rounded-2xl bg-teal-50 text-xl text-teal-700"><i [class]="paso.icono" aria-hidden="true"></i></span></div>
-          <h3 class="mt-7 text-xl font-semibold">{{ paso.titulo }}</h3>
-          <p class="mt-3 max-w-xs text-sm leading-7 text-slate-500">{{ paso.texto }}</p>
+  <!-- COMO FUNCIONA -->
+  <section id="como-funciona" class="scroll-mt-28 bg-[#f3f6f1]">
+    <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+
+      <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div>
+          <p class="text-xs font-bold tracking-[0.18em] text-[#24796b]">
+            ASÍ DE SIMPLE
+          </p>
+
+          <h2 class="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+            Tu próximo turno,
+            <br />
+            en tres pasos.
+          </h2>
+        </div>
+
+        <p class="max-w-sm text-sm leading-7 text-[#687a74]">
+          Menos tiempo organizando.
+          <br />
+          Más tiempo para lo que te hace bien.
+        </p>
+      </div>
+
+      <div class="mt-14 grid grid-cols-1 gap-0 md:grid-cols-3">
+
+        @for (paso of pasos; track paso.numero) {
+        <article class="border-t border-[#bfcfc6] py-7 md:px-7 md:first:pl-0 md:last:pr-0">
+          <div class="flex items-center justify-between">
+            <span class="text-4xl font-light tracking-tight text-[#155c52]/25">
+              {{ paso.numero }}
+            </span>
+
+            <span class="grid size-12 place-items-center rounded-2xl bg-[#e3eee6] text-xl text-[#24796b]">
+              <i [class]="paso.icono" aria-hidden="true"></i>
+            </span>
+          </div>
+
+          <h3 class="mt-7 text-xl font-semibold">
+            {{ paso.titulo }}
+          </h3>
+
+          <p class="mt-3 max-w-xs text-sm leading-7 text-[#687a74]">
+            {{ paso.texto }}
+          </p>
         </article>
-      }
-    </div>
-  </section>
-
-  <section id="cuidarte" class="scroll-mt-24 bg-[#123f39] text-white">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 lg:grid-cols-2 lg:items-center lg:px-10 lg:py-20">
-      <div><p class="text-xs font-bold tracking-[0.18em] text-teal-200">MÁS QUE UNA RESERVA</p><h2 class="mt-5 text-4xl font-medium leading-tight tracking-tight sm:text-5xl">Cuidar de vos<br>también es hacerlo<br><span class="text-[#cde4ad]">más fácil.</span></h2><p class="mt-6 max-w-sm text-sm leading-7 text-teal-100/75">Creemos en una experiencia de atención que empieza antes de entrar al consultorio. Clara, cercana y pensada para tu día a día.</p></div>
-      <div class="grid gap-7">
-        <div class="flex gap-5 border-b border-white/15 pb-7"><span class="grid size-11 shrink-0 place-items-center rounded-full bg-white/10"><i class="pi pi-user" aria-hidden="true"></i></span><div><h3 class="text-lg font-medium">Elegí con tranquilidad</h3><p class="mt-2 text-sm leading-7 text-teal-100/70">Consultá los profesionales y sus especialidades antes de decidir tu próximo turno.</p></div></div>
-        <div class="flex gap-5 border-b border-white/15 pb-7"><span class="grid size-11 shrink-0 place-items-center rounded-full bg-white/10"><i class="pi pi-calendar" aria-hidden="true"></i></span><div><h3 class="text-lg font-medium">Un lugar para tu agenda</h3><p class="mt-2 text-sm leading-7 text-teal-100/70">Tus fechas, horarios y estados de reserva, organizados en tu espacio personal.</p></div></div>
-        <div class="flex gap-5"><span class="grid size-11 shrink-0 place-items-center rounded-full bg-white/10"><i class="pi pi-history" aria-hidden="true"></i></span><div><h3 class="text-lg font-medium">Cada cambio, a la vista</h3><p class="mt-2 text-sm leading-7 text-teal-100/70">Si necesitás reprogramar, podés hacerlo y consultar el historial de tu turno.</p></div></div>
+        }
       </div>
     </div>
   </section>
 
-  <section id="crear-cuenta" class="mx-auto grid max-w-7xl scroll-mt-24 grid-cols-1 gap-10 px-6 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20 lg:px-10 lg:py-24">
-    <div class="lg:pt-10"><p class="text-xs font-bold tracking-[0.18em] text-teal-700">EMPEZÁ POR VOS</p><h2 class="mt-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">Tu espacio de salud<br>empieza acá.</h2><p class="mt-6 max-w-sm text-base leading-8 text-slate-500">Creá tu cuenta y tené tus turnos a mano. Sin llamadas, sin vueltas.</p>
-      <ul class="mt-8 flex flex-col gap-4 text-sm text-slate-600">
-        <li class="flex items-center gap-3"><i class="pi pi-check text-teal-700" aria-hidden="true"></i> Reservá según tu disponibilidad.</li>
-        <li class="flex items-center gap-3"><i class="pi pi-check text-teal-700" aria-hidden="true"></i> Consultá el estado de tus turnos.</li>
-        <li class="flex items-center gap-3"><i class="pi pi-check text-teal-700" aria-hidden="true"></i> Gestioná los cambios desde un solo lugar.</li>
-      </ul>
-      <div class="mt-10 inline-flex items-center gap-4 rounded-2xl bg-[#edf3ed] p-5"><i class="pi pi-heart text-2xl text-teal-700" aria-hidden="true"></i><p class="text-sm leading-6">Un pequeño paso hoy.<br><strong>Más tranquilidad para mañana.</strong></p></div>
-    </div>
-    <div class="min-w-0 rounded-3xl border border-teal-900/10 bg-white p-6 shadow-sm sm:p-9">
-      <h3 class="text-2xl font-semibold tracking-tight">Creá tu cuenta</h3><p class="mb-7 mt-2 text-sm text-slate-500">Completá tus datos para empezar.</p>
-      <app-formulario-registro prefijo="home-registro" />
+  <!-- DIFERENCIAL -->
+  <section id="cuidarte" class="scroll-mt-24 overflow-hidden bg-[#103f38] text-white">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-14 px-6 py-20 lg:grid-cols-2 lg:items-center lg:px-10 lg:py-24">
+
+      <div>
+        <p class="text-xs font-bold tracking-[0.18em] text-[#b9d9c4]">
+          MÁS QUE UNA RESERVA
+        </p>
+
+        <h2 class="mt-5 text-4xl font-medium leading-[1.08] tracking-tight sm:text-5xl">
+          Cuidar de vos
+          <br />
+          también es hacerlo
+          <br />
+          <span class="text-[#cde4ad]">más fácil.</span>
+        </h2>
+
+        <p class="mt-7 max-w-md text-sm leading-7 text-[#c3d6d0]">
+          Creemos en una experiencia de atención que empieza antes de entrar
+          al consultorio. Clara, cercana y pensada para tu día a día.
+        </p>
+      </div>
+
+      <div class="grid gap-0">
+
+        <div class="flex gap-5 border-b border-white/15 py-7 first:pt-0">
+          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white/10 text-[#cde4ad]">
+            <i class="pi pi-user" aria-hidden="true"></i>
+          </span>
+
+          <div>
+            <h3 class="text-lg font-medium">Elegí con tranquilidad</h3>
+            <p class="mt-2 text-sm leading-7 text-[#b9ccc6]">
+              Conocé profesionales, especialidades y disponibilidad antes
+              de decidir tu próximo turno.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-5 border-b border-white/15 py-7">
+          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white/10 text-[#cde4ad]">
+            <i class="pi pi-calendar" aria-hidden="true"></i>
+          </span>
+
+          <div>
+            <h3 class="text-lg font-medium">Todo en un solo lugar</h3>
+            <p class="mt-2 text-sm leading-7 text-[#b9ccc6]">
+              Tus fechas, horarios y estados de reserva, organizados en
+              tu espacio personal.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-5 py-7 last:pb-0">
+          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white/10 text-[#cde4ad]">
+            <i class="pi pi-history" aria-hidden="true"></i>
+          </span>
+
+          <div>
+            <h3 class="text-lg font-medium">Cambios sin vueltas</h3>
+            <p class="mt-2 text-sm leading-7 text-[#b9ccc6]">
+              Reprogramá cuando lo necesites y consultá el historial
+              de tus turnos desde tu cuenta.
+            </p>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <section id="preguntas" class="scroll-mt-24 border-t border-teal-900/10 bg-white">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:px-10">
-      <div><p class="text-xs font-bold tracking-[0.18em] text-teal-700">TE ACOMPAÑAMOS</p><h2 class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">Algunas respuestas<br>antes de empezar.</h2></div>
+  <!-- REGISTRO -->
+  <section id="crear-cuenta" class="scroll-mt-24 bg-[#e7eee8]">
+    <div
+      class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20 lg:px-10 lg:py-28">
+
+      <div class="lg:pt-8">
+        <p class="text-xs font-bold tracking-[0.18em] text-[#24796b]">
+          EMPEZÁ POR VOS
+        </p>
+
+        <h2 class="mt-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+          Tu espacio de salud
+          <br />
+          empieza acá.
+        </h2>
+
+        <p class="mt-6 max-w-md text-base leading-8 text-[#60736c]">
+          Creá tu cuenta y empezá a gestionar tus turnos desde un solo lugar.
+          Sin llamadas, sin vueltas.
+        </p>
+
+        <ul class="mt-9 flex flex-col gap-4 text-sm text-[#4e625b]">
+          <li class="flex items-center gap-3">
+            <span class="grid size-6 place-items-center rounded-full bg-[#d4e5d7]">
+              <i class="pi pi-check text-xs text-[#155c52]" aria-hidden="true"></i>
+            </span>
+            Reservá según tu disponibilidad.
+          </li>
+
+          <li class="flex items-center gap-3">
+            <span class="grid size-6 place-items-center rounded-full bg-[#d4e5d7]">
+              <i class="pi pi-check text-xs text-[#155c52]" aria-hidden="true"></i>
+            </span>
+            Consultá el estado de tus turnos.
+          </li>
+
+          <li class="flex items-center gap-3">
+            <span class="grid size-6 place-items-center rounded-full bg-[#d4e5d7]">
+              <i class="pi pi-check text-xs text-[#155c52]" aria-hidden="true"></i>
+            </span>
+            Gestioná los cambios desde un solo lugar.
+          </li>
+        </ul>
+
+        <div class="mt-10 inline-flex items-center gap-4 rounded-2xl border border-[#cfddd3] bg-[#f3f6f1] p-5">
+          <i class="pi pi-heart text-2xl text-[#24796b]" aria-hidden="true"></i>
+
+          <p class="text-sm leading-6 text-[#50645d]">
+            Un pequeño paso hoy.
+            <br />
+            <strong class="text-[#173c36]">Más tranquilidad para mañana.</strong>
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="min-w-0 rounded-[2rem] border border-[#d3dfd6] bg-white p-6 shadow-[0_25px_70px_-25px_rgba(16,63,56,0.18)] sm:p-10">
+        <div class="mb-8">
+          <span class="inline-flex size-10 items-center justify-center rounded-xl bg-[#e4efcf] text-[#155c52]">
+            <i class="pi pi-user-plus" aria-hidden="true"></i>
+          </span>
+
+          <h3 class="mt-5 text-2xl font-semibold tracking-tight">
+            Creá tu cuenta
+          </h3>
+
+          <p class="mt-2 text-sm text-[#687a74]">
+            Completá tus datos para empezar a reservar.
+          </p>
+        </div>
+
+        <app-formulario-registro prefijo="home-registro" />
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="preguntas" class="scroll-mt-24 border-t border-[#d7e1da] bg-[#f3f6f1]">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-24">
+
+      <div>
+        <p class="text-xs font-bold tracking-[0.18em] text-[#24796b]">
+          TE ACOMPAÑAMOS
+        </p>
+
+        <h2 class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+          Algunas respuestas
+          <br />
+          antes de empezar.
+        </h2>
+      </div>
+
       <div>
         @for (pregunta of preguntas; track pregunta.titulo) {
-          <details class="group border-b border-teal-900/10 py-5">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-semibold sm:text-base">{{ pregunta.titulo }}<i class="pi pi-plus shrink-0 text-xs text-teal-700 group-open:rotate-45" aria-hidden="true"></i></summary>
-            <p class="mt-4 pr-6 text-sm leading-7 text-slate-500">{{ pregunta.respuesta }}</p>
-          </details>
+        <details class="group border-b border-[#d7e1da] py-5 first:border-t">
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-semibold sm:text-base">
+            {{ pregunta.titulo }}
+
+            <span class="grid size-8 shrink-0 place-items-center rounded-full bg-[#e4eee7]">
+              <i class="pi pi-plus text-xs text-[#24796b] transition-transform duration-200 group-open:rotate-45"
+                aria-hidden="true"></i>
+            </span>
+          </summary>
+
+          <p class="mt-4 pr-6 text-sm leading-7 text-[#687a74]">
+            {{ pregunta.respuesta }}
+          </p>
+        </details>
         }
       </div>
     </div>
   </section>
 </div>
+
 <app-public-footer />

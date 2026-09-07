@@ -3,8 +3,15 @@ import { PacienteService } from './paciente.service';
 import { Query } from '@nestjs/common';
 import { PaginacionDto } from '../comun/paginacion.dto';
 import { ActualizarPacienteDto } from './dto/actualizar-paciente.dto';
+import { UseGuards } from '@nestjs/common';
+import { AutenticacionGuard } from '../auth/guards/autenticacion.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Rol } from '../generated/prisma/enums';
 
 @Controller('pacientes')
+@UseGuards(AutenticacionGuard, RolesGuard)
+@Roles(Rol.ADMINISTRATIVO)
 export class PacienteController {
     constructor(private readonly pacienteService: PacienteService) { }
 

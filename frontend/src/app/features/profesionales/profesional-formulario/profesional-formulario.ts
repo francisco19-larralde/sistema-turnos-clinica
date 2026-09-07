@@ -57,14 +57,15 @@ export class ProfesionalFormulario implements OnInit {
     this.esEdicion.set(true);
     this.idEditando = Number(idParam);
 
-    this.formulario.get('nombre')?.disable();
-    this.formulario.get('apellido')?.disable();
-    this.formulario.get('email')?.disable();
-    this.formulario.get('contrasena')?.disable();
+    this.formulario.controls.contrasena.setValidators([Validators.minLength(8)]);
+    this.formulario.controls.contrasena.updateValueAndValidity();
 
     this.profesionalService.buscarPorId(this.idEditando).subscribe({
       next: (profesional) => {
         this.formulario.patchValue({
+          nombre: profesional.usuario.nombre,
+          apellido: profesional.usuario.apellido,
+          email: profesional.usuario.email,
           matricula: profesional.matricula,
           telefono: profesional.telefono,
           especialidadId: profesional.especialidad.id,
@@ -75,6 +76,7 @@ export class ProfesionalFormulario implements OnInit {
   }
 
   enviar(): void {
+    if (this.cargando()) return;
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;
@@ -85,8 +87,12 @@ export class ProfesionalFormulario implements OnInit {
     const datos = this.formulario.getRawValue();
     const peticion = this.esEdicion()
       ? this.profesionalService.actualizar(this.idEditando!, {
+        nombre: datos.nombre!,
+        apellido: datos.apellido!,
+        email: datos.email!,
+        contrasena: datos.contrasena || undefined,
         matricula: datos.matricula!,
-        telefono: datos.telefono || undefined,
+        telefono: datos.telefono ?? '',
         especialidadId: datos.especialidadId!,
       })
       : this.profesionalService.crear({
@@ -112,7 +118,6 @@ export class ProfesionalFormulario implements OnInit {
     });
   }
 }
-
 
 
 

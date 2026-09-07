@@ -1,4 +1,5 @@
-import { Body, Controller, Get, HttpCode, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { ActualizarPerfilDto } from './dto/actualizar-perfil.dto';
 import { AuthService } from "./auth.service";
 import { AutenticacionGuard } from "./guards/autenticacion.guard";
 import { LoginDto } from "./dto/login.dto";
@@ -23,7 +24,13 @@ export class AuthController {
     @UseGuards(AutenticacionGuard)
     @Get('perfil')
     perfil(@Req() request: Request) {
-        return (request as any).usuario;
+        return this.authService.perfil((request as any).usuario.sub);
+    }
+
+    @UseGuards(AutenticacionGuard)
+    @Patch('perfil')
+    actualizarPerfil(@Req() request: Request, @Body() datos: ActualizarPerfilDto) {
+        return this.authService.actualizarPerfil((request as any).usuario.sub, datos);
     }
 
 

@@ -1,48 +1,65 @@
 <p-toast />
 <p-confirmdialog />
 
-<div class="p-6">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-xl font-bold">Especialidades</h1>
-    <a routerLink="nueva">
-      <p-button label="Nueva especialidad" icon="pi pi-plus" />
-    </a>
+<div class="min-h-screen bg-[#f8faf7] px-5 py-10 sm:py-16">
+  <div class="mx-auto max-w-5xl">
+
+    <div
+      class="mb-6 flex items-center justify-between gap-4 rounded-3xl border border-teal-900/10 bg-white p-6 shadow-sm sm:p-8">
+      <div>
+        <p class="text-xs font-semibold tracking-[0.16em] text-teal-700">CATÁLOGO</p>
+        <h1 class="mt-2 text-2xl font-semibold tracking-tight text-[#183c36] sm:text-3xl">Especialidades</h1>
+      </div>
+      <a routerLink="nueva">
+        <p-button label="Nueva especialidad" icon="pi pi-plus"
+          styleClass="!rounded-xl !border-teal-800 !bg-teal-800 hover:!bg-teal-900" />
+      </a>
+    </div>
+
+    @if (error()) {
+    <div class="mb-4 flex items-center justify-between rounded-xl bg-red-50 p-4 text-sm text-red-800" role="alert">
+      {{ error() }}
+      <p-button label="Reintentar" severity="secondary" [text]="true" (onClick)="pagina.cargar()" />
+    </div>
+    }
+
+    <div class="overflow-hidden rounded-3xl border border-teal-900/10 bg-white shadow-sm">
+      <p-table #tabla [value]="especialidades()" [paginator]="true" [rows]="pagina.filas()" [first]="pagina.primero()"
+        [lazy]="true" (onLazyLoad)="pagina.cargar($event)" [totalRecords]="pagina.total()" [loading]="cargando()"
+        [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first}–{last} de {totalRecords}" [pageLinks]="3"
+        [globalFilterFields]="['nombre', 'descripcion']">
+        <ng-template #caption>
+          <app-filtros-tabla [tabla]="tabla" placeholder="Nombre o descripción" />
+        </ng-template>
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="3" class="py-10 text-center text-sm text-slate-500">No hay resultados para los filtros
+              seleccionados.</td>
+          </tr>
+        </ng-template>
+        <ng-template #header>
+          <tr class="text-sm text-slate-500">
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th class="w-32">Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-especialidad>
+          <tr>
+            <td>{{ especialidad.nombre }}</td>
+            <td class="text-slate-500">{{ especialidad.descripcion ?? '—' }}</td>
+            <td class="flex gap-1">
+              <a [routerLink]="[especialidad.id, 'editar']">
+                <p-button icon="pi pi-pencil" severity="secondary" [text]="true" aria-label="Editar" />
+              </a>
+              <p-button icon="pi pi-trash" severity="danger" [text]="true" aria-label="Eliminar"
+                (onClick)="confirmarEliminacion(especialidad)" />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
   </div>
-
-  @if (error()) {
-    <div class="mb-4 text-error" role="alert">{{ error() }} <p-button label="Reintentar" severity="secondary" (onClick)="pagina.cargar()" /></div>
-  }
-
-  <p-table #tabla [value]="especialidades()" styleClass="rounded-box overflow-hidden" [paginator]="true" [rows]="pagina.filas()" [first]="pagina.primero()"
-    [lazy]="true" (onLazyLoad)="pagina.cargar($event)" [totalRecords]="pagina.total()" [loading]="cargando()"
-    [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true"
-    currentPageReportTemplate="{first}–{last} de {totalRecords}" [pageLinks]="3"
-    [globalFilterFields]="['nombre', 'descripcion']">
-    <ng-template #caption>
-      <app-filtros-tabla [tabla]="tabla" placeholder="Nombre o descripción"  />
-    </ng-template>
-    <ng-template #emptymessage>
-      <tr><td colspan="3" class="py-8 text-center">No hay resultados para los filtros seleccionados.</td></tr>
-    </ng-template>
-    <ng-template #header>
-      <tr>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th class="w-32">Acciones</th>
-      </tr>
-    </ng-template>
-    <ng-template #body let-especialidad>
-      <tr>
-        <td>{{ especialidad.nombre }}</td>
-        <td>{{ especialidad.descripcion ?? '—' }}</td>
-        <td class="flex gap-2">
-          <a [routerLink]="[especialidad.id, 'editar']">
-            <p-button icon="pi pi-pencil" severity="secondary" [text]="true" />
-          </a>
-          <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="confirmarEliminacion(especialidad)" />
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-
 </div>

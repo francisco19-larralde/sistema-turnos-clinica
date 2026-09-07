@@ -87,10 +87,15 @@ export class ProfesionalService {
         if (datos.especialidadId) {
             await this.validarEspecialidadExiste(datos.especialidadId);
         }
+        const contrasenaHash = datos.contrasena ? await hashearContrasena(datos.contrasena) : undefined;
 
         return this.prisma.profesional.update({
             where: { id },
-            data: datos,
+            data: {
+                matricula: datos.matricula, telefono: datos.telefono,
+                especialidad: datos.especialidadId ? { connect: { id: datos.especialidadId } } : undefined,
+                usuario: { update: { nombre: datos.nombre?.trim(), apellido: datos.apellido?.trim(), email: datos.email, contrasenaHash } },
+            },
             include: { especialidad: true, usuario: SELECCION_USUARIO },
         });
     }

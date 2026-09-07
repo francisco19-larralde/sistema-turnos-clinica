@@ -24,6 +24,10 @@ export interface CrearProfesional {
 }
 
 export interface ActualizarProfesional {
+  nombre?: string;
+  apellido?: string;
+  email?: string;
+  contrasena?: string;
   matricula?: string;
   telefono?: string;
   especialidadId?: number;
