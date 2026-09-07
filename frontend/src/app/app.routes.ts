@@ -8,6 +8,10 @@ import { EspecialidadesLista } from './features/especialidades/especialidades-li
 import { EspecialidadFormulario } from './features/especialidades/especialidad-formulario/especialidad-formulario';
 import { ProfesionalesLista } from './features/profesionales/profesionales-lista/profesionales-lista';
 import { ProfesionalFormulario } from './features/profesionales/profesional-formulario/profesional-formulario';
+import { PacientesLista } from './features/pacientes/pacientes-lista/pacientes-lista';
+import { PacienteFormulario } from './features/pacientes/paciente-formulario/paciente-formulario';
+import { TurnosLista } from './features/turnos/turnos-lista/turnos-lista';
+import { TurnoFormularioComponent } from './features/turnos/turnos-formulario/turnos-formulario';
 
 export const routes: Routes = [
   {
@@ -53,6 +57,34 @@ export const routes: Routes = [
       {
         path: ':id/editar',
         component: ProfesionalFormulario,
+      },
+    ],
+  },
+  {
+    path: 'pacientes',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: PacientesLista,
+      },
+      {
+        path: ':id/editar',
+        component: PacienteFormulario,
+      },
+    ],
+  },
+  {
+    path: 'turnos',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: TurnosLista,
+      },
+      {
+        path: 'nuevo',
+        component: TurnoFormularioComponent,
       },
     ],
   },

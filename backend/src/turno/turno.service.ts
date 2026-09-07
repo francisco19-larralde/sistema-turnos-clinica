@@ -4,6 +4,17 @@ import { EstadoTurno, Rol } from "../generated/prisma/enums";
 import { DURACION_TURNO_MINUTOS, horaAMinutos, minutosAHora, obtenerDiaSemana } from "./turno.constantes";
 import { CrearTurnoDto } from "./dto/crear-turno.dto";
 
+const INCLUDE_TURNO = {
+    paciente: {
+        include: { usuario: { select: { nombre: true, apellido: true, email: true } } },
+    },
+    profesional: {
+        include: {
+            usuario: { select: { nombre: true, apellido: true } },
+            especialidad: true,
+        },
+    },
+} as const;
 
 interface UsuarioAutenticado {
     sub: number;
@@ -48,15 +59,17 @@ export class TurnoService {
             minutoFin,
         );
 
+        const fecha = new Date(`${datos.fecha}T00:00:00`);
+
         return this.prisma.turno.create({
             data: {
-                fecha: datos.fecha,
+                fecha,
                 horaInicio: datos.horaInicio,
                 horaFin,
                 pacienteId,
                 profesionalId: datos.profesionalId
             },
-            include: { paciente: true, profesional: true },
+            include: INCLUDE_TURNO,
         });
     }
 
@@ -65,7 +78,7 @@ export class TurnoService {
 
         return this.prisma.turno.findMany({
             where: filtro,
-            include: { paciente: true, profesional: true },
+            include: INCLUDE_TURNO,
             orderBy: [{ fecha: 'asc' }, { horaInicio: 'asc' },]
         })
     }
@@ -87,6 +100,7 @@ export class TurnoService {
         return this.prisma.turno.update({
             where: { id },
             data: { estado: EstadoTurno.CANCELADO },
+            include: INCLUDE_TURNO,
         });
     }
 
@@ -101,6 +115,7 @@ export class TurnoService {
         return this.prisma.turno.update({
             where: { id },
             data: { estado: EstadoTurno.CONFIRMADO },
+            include: INCLUDE_TURNO,
         });
     }
 
@@ -115,8 +130,70 @@ export class TurnoService {
         return this.prisma.turno.update({
             where: { id },
             data: { estado: EstadoTurno.COMPLETADO },
+            include: INCLUDE_TURNO,
         });
     }
+
+    async obtenerHorariosDisponibles(profesionalId: number, fecha: string) {
+        if (!fecha) {
+            throw new BadRequestException('Debe indicar el parámetro fecha (YYYY-MM-DD)');
+        }
+
+        const profesional = await this.prisma.profesional.findUnique({
+            where: { id: profesionalId },
+        });
+
+        if (!profesional) {
+            throw new NotFoundException(`Profesional con id ${profesionalId} no encontrado`);
+        }
+
+        const diaSemana = obtenerDiaSemana(new Date(`${fecha}T00:00:00Z`));
+
+        const disponibilidades = await this.prisma.disponibilidad.findMany({
+            where: { profesionalId, diaSemana },
+        })
+
+        if (disponibilidades.length === 0) {
+            return [];
+        }
+
+        const turnosDelDia = await this.prisma.turno.findMany({
+            where: { profesionalId, fecha: new Date(fecha), estado: { not: EstadoTurno.CANCELADO } },
+        });
+
+        const rangosOcupados = turnosDelDia.map((turno) => ({
+            inicio: horaAMinutos(turno.horaInicio),
+            fin: horaAMinutos(turno.horaFin),
+        }));
+
+        const ahora = Date.now();
+        const horariosLibres: string[] = [];
+
+        for (const disponibilidad of disponibilidades) {
+            let cursor = horaAMinutos(disponibilidad.horaInicio);
+            const finRango = horaAMinutos(disponibilidad.horaFin);
+            while (cursor + DURACION_TURNO_MINUTOS <= finRango) {
+                const finSlot = cursor + DURACION_TURNO_MINUTOS;
+                const horaSlot = minutosAHora(cursor);
+
+                const seSuperpone = rangosOcupados.some(
+                    (rango) => cursor < rango.fin && finSlot > rango.inicio,
+                );
+                const esPasado = new Date(`${fecha}T${horaSlot}:00`).getTime() < ahora;
+
+                if (!seSuperpone && !esPasado) {
+                    horariosLibres.push(horaSlot);
+                }
+
+                cursor += DURACION_TURNO_MINUTOS;
+            }
+        }
+
+        return horariosLibres;
+    }
+
+
+
 
     // ---------- Helpers privados ----------
 
@@ -180,10 +257,12 @@ export class TurnoService {
         minutoInicio: number,
         minutoFin: number,
     ) {
+        const fechaDate = new Date(`${fecha}T00:00:00`);
+
         const turnosDelDia = await this.prisma.turno.findMany({
             where: {
                 profesionalId,
-                fecha,
+                fecha: fechaDate,
                 estado: { not: EstadoTurno.CANCELADO },
             },
         });
@@ -191,11 +270,14 @@ export class TurnoService {
         const haySuperposicion = turnosDelDia.some((turno) => {
             const inicioExistente = horaAMinutos(turno.horaInicio);
             const finExistente = horaAMinutos(turno.horaFin);
+
             return minutoInicio < finExistente && minutoFin > inicioExistente;
         });
 
         if (haySuperposicion) {
-            throw new BadRequestException('El profesional ya tiene un turno en ese horario');
+            throw new BadRequestException(
+                'El profesional ya tiene un turno en ese horario'
+            );
         }
     }
 
@@ -211,7 +293,7 @@ export class TurnoService {
             return { pacienteId: paciente?.id ?? -1 };
         }
 
-        // PROFESIONAL
+
         const profesional = await this.prisma.profesional.findUnique({
             where: { usuarioId: usuarioSolicitante.sub },
         });
@@ -221,7 +303,7 @@ export class TurnoService {
     private async obtenerTurnoOFallar(id: number) {
         const turno = await this.prisma.turno.findUnique({
             where: { id },
-            include: { paciente: true, profesional: true },
+            include: INCLUDE_TURNO,
         });
 
         if (!turno) {

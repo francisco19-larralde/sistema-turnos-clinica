@@ -1,0 +1,40 @@
+<p-toast />
+<p-confirmdialog />
+
+<div class="p-6">
+  <h1 class="text-xl font-bold mb-4">Pacientes</h1>
+
+  @if (cargando()) {
+  <div class="text-center py-10 text-base-content/60">Cargando pacientes...</div>
+  } @else if (error()) {
+  <div class="text-center py-10 text-error">{{ error() }}</div>
+  } @else if (pacientes().length === 0) {
+  <div class="text-center py-10 text-base-content/60">No hay pacientes registrados.</div>
+  } @else {
+  <p-table [value]="pacientes()" styleClass="rounded-box overflow-hidden">
+    <ng-template #header>
+      <tr>
+        <th>Nombre</th>
+        <th>DNI</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th class="w-32"></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-paciente>
+      <tr>
+        <td>{{ paciente.usuario.nombre }} {{ paciente.usuario.apellido }}</td>
+        <td>{{ paciente.dni }}</td>
+        <td>{{ paciente.usuario.email }}</td>
+        <td>{{ paciente.telefono ?? '—' }}</td>
+        <td class="flex gap-2">
+          <a [routerLink]="[paciente.id, 'editar']">
+            <p-button icon="pi pi-pencil" severity="secondary" [text]="true" />
+          </a>
+          <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="confirmarEliminacion(paciente)" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  }
+</div>

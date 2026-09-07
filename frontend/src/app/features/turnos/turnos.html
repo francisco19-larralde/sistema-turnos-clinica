@@ -1,0 +1,54 @@
+@if (cargando()) {
+<div class="text-center py-6 text-base-content/60">Cargando disponibilidad...</div>
+} @else if (error()) {
+<div class="text-center py-6 text-error">{{ error() }}</div>
+} @else if (columnas().length === 0) {
+<div class="text-center py-6 text-base-content/60">
+  El profesional no tiene disponibilidad cargada para los próximos días.
+</div>
+} @else {
+<div class="overflow-x-auto">
+  <table class="border-separate border-spacing-1">
+    <thead>
+      <tr>
+        <th class="text-left text-sm font-medium px-2">Horario</th>
+        @for (columna of columnas(); track columna.fecha) {
+        <th class="text-center text-sm font-medium capitalize px-1">{{ columna.etiqueta }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (hora of filasHorarios(); track hora) {
+      <tr>
+        <td class="text-sm font-medium px-2">{{ hora }}</td>
+        @for (columna of columnas(); track columna.fecha) {
+        @let celda = obtenerCelda(columna.fecha, hora);
+        <td class="text-center text-xs rounded-btn w-14 h-9 select-none transition-colors"
+          [class.bg-success]="celda.estado === 'disponible'"
+          [class.text-success-content]="celda.estado === 'disponible'"
+          [class.cursor-pointer]="celda.estado === 'disponible'" [class.bg-error]="celda.estado === 'ocupado'"
+          [class.text-error-content]="celda.estado === 'ocupado'" [class.opacity-50]="celda.estado === 'ocupado'"
+          [class.bg-base-300]="celda.estado === 'no-aplica'" [class.cursor-not-allowed]="celda.estado !== 'disponible'"
+          (click)="seleccionar(celda)">
+          @if (celda.estado === 'disponible') { ✓ }
+          @if (celda.estado === 'ocupado') { ✕ }
+        </td>
+        }
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="flex gap-4 mt-3 text-xs text-base-content/70">
+  <span class="flex items-center gap-1">
+    <span class="w-3 h-3 rounded bg-success inline-block"></span> Disponible
+  </span>
+  <span class="flex items-center gap-1">
+    <span class="w-3 h-3 rounded bg-error opacity-50 inline-block"></span> Ocupado
+  </span>
+  <span class="flex items-center gap-1">
+    <span class="w-3 h-3 rounded bg-base-300 inline-block"></span> No atiende
+  </span>
+</div>
+}

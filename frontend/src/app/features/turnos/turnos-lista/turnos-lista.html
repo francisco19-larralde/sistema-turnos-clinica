@@ -1,0 +1,108 @@
+<p-toast />
+<p-confirmdialog />
+
+<div class="min-h-screen bg-slate-50 p-4 md:p-6 lg:p-8">
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600"><i
+          class="pi pi-calendar text-lg"></i></div>
+      <div>
+        <h1 class="text-2xl font-semibold text-slate-800">Turnos</h1>
+        <p class="text-sm text-slate-500">Gestión y seguimiento de turnos médicos</p>
+      </div>
+    </div>
+    <a routerLink="nuevo"><p-button label="Reservar turno" icon="pi pi-plus" styleClass="w-full sm:w-auto" /></a>
+  </div>
+
+  @if (cargando()) {
+  <div class="rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm"><i
+      class="pi pi-spin pi-spinner mb-3 text-2xl text-blue-500"></i>
+    <p class="text-sm text-slate-500">Cargando turnos...</p>
+  </div>
+  } @else if (error()) {
+  <div class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
+    <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100"><i
+        class="pi pi-exclamation-triangle text-red-500"></i></div>
+    <p class="font-medium text-red-700">No se pudieron cargar los turnos</p>
+    <p class="mt-1 text-sm text-red-600">{{ error() }}</p>
+  </div>
+  } @else if (turnos().length === 0) {
+  <div class="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100"><i
+        class="pi pi-calendar-times text-xl text-slate-400"></i></div>
+    <h2 class="font-medium text-slate-700">No hay turnos</h2>
+    <p class="mt-1 text-sm text-slate-500">Todavía no hay turnos para mostrar.</p>
+  </div>
+  } @else {
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <p-table [value]="turnos()" styleClass="w-full" [tableStyle]="{ 'min-width': '900px' }">
+      <ng-template #header>
+        <tr class="bg-slate-50">
+          <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Fecha</th>
+          <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Horario</th>
+          <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Paciente</th>
+          <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Profesional</th>
+          <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Especialidad</th>
+          <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Estado</th>
+          <th class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-turno>
+        <tr class="border-t border-slate-100 transition-colors hover:bg-slate-50/70">
+          <td class="whitespace-nowrap px-5 py-4">
+            <div class="flex items-center gap-3">
+              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600"><i
+                  class="pi pi-calendar"></i></div>
+              <div>
+                <p class="font-medium text-slate-700">{{ turno.fecha | date: 'dd/MM/yyyy' }}</p>
+                <p class="text-xs text-slate-400">Fecha del turno</p>
+              </div>
+            </div>
+          </td>
+          <td class="whitespace-nowrap px-5 py-4">
+            <div class="flex items-center gap-2 text-slate-700"><i class="pi pi-clock text-slate-400"></i><span
+                class="font-medium">{{ turno.horaInicio }} - {{ turno.horaFin }}</span></div>
+          </td>
+          <td class="px-5 py-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-600">
+                {{ turno.paciente.usuario.nombre.charAt(0) }}</div>
+              <div>
+                <p class="font-medium text-slate-700">{{ turno.paciente.usuario.nombre }} {{
+                  turno.paciente.usuario.apellido }}</p>
+                <p class="text-xs text-slate-400">Paciente</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-50 text-sm font-semibold text-violet-600">
+                {{ turno.profesional.usuario.nombre.charAt(0) }}</div>
+              <div>
+                <p class="font-medium text-slate-700">{{ turno.profesional.usuario.nombre }} {{
+                  turno.profesional.usuario.apellido }}</p>
+                <p class="text-xs text-slate-400">Profesional</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-4"><span
+              class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">{{
+              turno.profesional.especialidad.nombre }}</span></td>
+          <td class="whitespace-nowrap px-5 py-4"><p-tag [value]="turno.estado"
+              [severity]="severidadEstado(turno.estado)" /></td>
+          <td class="whitespace-nowrap px-5 py-4">
+            <div class="flex justify-end gap-1">@if (puedeCancelar(turno)) { <p-button icon="pi pi-times"
+                severity="danger" [text]="true" [rounded]="true" (onClick)="confirmarCancelacion(turno)" /> } @if
+              (esProfesionalOAdmin() && turno.estado === 'PENDIENTE') { <p-button icon="pi pi-check" severity="success"
+                [text]="true" [rounded]="true" (onClick)="confirmar(turno)" /> } @if (esProfesionalOAdmin() &&
+              turno.estado === 'CONFIRMADO') { <p-button icon="pi pi-check-circle" severity="info" [text]="true"
+                [rounded]="true" (onClick)="completar(turno)" /> }</div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  }
+</div>
